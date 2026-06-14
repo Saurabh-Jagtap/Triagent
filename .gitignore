@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# next
+.next
+out
+
+# build
+dist
+build
+
+# env
+.env
+.env
+
+# logs
+*.log
+
+# drizzle generated metadata (optional)
+drizzle/meta
+
+# os
+.DS_Store
+Thumbs.db
+
+# typescript
+*.tsbuildinfo
