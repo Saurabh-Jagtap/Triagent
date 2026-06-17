@@ -11,34 +11,87 @@ type EmailCardProps = {
   email: Email;
 };
 
-export const EmailCard = ({
-  email
-}: EmailCardProps) => {
+function getInitials(from: string): string {
+  const namePart = from.split("<")[0].trim();
+  const source = namePart.length > 0 ? namePart : from;
+  const parts = source.split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
+function getDisplayName(from: string): string {
+  const namePart = from.split("<")[0].trim();
+  return namePart.length > 0 ? namePart : from;
+}
+
+export function EmailCard({ email }: EmailCardProps) {
+  const initials = getInitials(email.from);
+  const displayName = getDisplayName(email.from);
+
   return (
-    <div className="border rounded-xl p-4">
-  <div className="flex justify-between">
-    <h3 className="font-semibold">
-      {email.subject}
-    </h3>
+    <div
+      className={`
+        group flex items-start gap-3 rounded-lg border p-4 transition-colors
+        ${
+          email.unread
+            ? "border-[#D1D9E0] bg-white"
+            : "border-[#E8ECF0] bg-white/60"
+        }
+        hover:border-[#BDD0DA] hover:bg-[#EDF0F3]
+      `}
+    >
+      {/* Unread indicator bar */}
+      <div
+        className={`mt-1 h-[calc(100%-0.5rem)] w-[3px] self-stretch rounded-full ${
+          email.unread ? "bg-[#4A7FA0]" : "bg-transparent"
+        }`}
+      />
 
-    {email.unread && (
-      <span className="text-xs px-2 py-1 rounded bg-blue-100">
-        Unread
-      </span>
-    )}
-  </div>
+      {/* Avatar */}
+      <div
+        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-medium ${
+          email.unread
+            ? "bg-[#EAF2F8] text-[#2D4A5E]"
+            : "bg-[#E8ECF0] text-[#7A8B96]"
+        }`}
+      >
+        {initials}
+      </div>
 
-  <p className="text-sm text-gray-500 mt-1">
-    {email.from}
-  </p>
+      {/* Body */}
+      <div className="min-w-0 flex-1">
+        <div className="mb-0.5 flex items-center justify-between gap-2">
+          <span
+            className={`truncate text-sm ${
+              email.unread
+                ? "font-medium text-[#1A2B35]"
+                : "font-normal text-[#4A5568]"
+            }`}
+          >
+            {displayName}
+          </span>
+          <div className="flex flex-shrink-0 items-center gap-2">
+            {email.unread && (
+              <span className="rounded-full bg-[#EAF2F8] px-2 py-0.5 text-[10px] font-medium text-[#2D4A5E]">
+                New
+              </span>
+            )}
+            <span className="text-[11px] text-[#7A8B96]">{email.date}</span>
+          </div>
+        </div>
 
-  <p className="text-sm mt-3">
-    {email.snippet}
-  </p>
+        <p
+          className={`truncate text-sm ${
+            email.unread ? "font-medium text-[#1A2B35]" : "text-[#4A5568]"
+          }`}
+        >
+          {email.subject}
+        </p>
 
-  <p className="text-xs text-gray-400 mt-3">
-    {new Date(email.date).toLocaleString()}
-  </p>
-</div>
+        <p className="truncate text-xs text-[#7A8B96]">{email.snippet}</p>
+      </div>
+    </div>
   );
-};
+}

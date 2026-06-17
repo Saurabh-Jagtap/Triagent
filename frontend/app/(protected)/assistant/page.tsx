@@ -1,4 +1,5 @@
 "use client"
+import { QUICK_ACTIONS } from '@/app/constants/assistant';
 import { useSession } from '@/utils/auth-client';
 import { useState } from 'react'
 
@@ -7,86 +8,12 @@ type Message = {
   content: string;
 };
 
-const QUICK_ACTIONS = [
-  { label: "Daily Brief", prompt: "Generate my daily brief" },
-  {
-    label: "Priority Emails",
-    prompt: `
-Review my inbox.
-
-Identify emails that require action.
-
-Group them into:
-
-1. High Priority
-2. Medium Priority
-3. Low Priority
-
-Explain why each email belongs in that category.
-
-Focus on actionable emails.
-`,
-  },
-  {
-    label: "Upcoming Meetings",
-    prompt: `
-Review my calendar.
-
-Summarize:
-
-- Upcoming meetings
-- Deadlines
-- Important events
-
-Highlight anything requiring preparation.
-`,
-  },
-  {
-    label: "Focus Today",
-    prompt: `
-Review my inbox and calendar.
-
-Tell me:
-
-1. What should I focus on today?
-2. What needs immediate attention?
-3. What can be ignored?
-4. What actions should I take next?
-
-Be concise.
-`,
-  },
-  {
-    label: "Inbox Summary",
-    prompt: `
-Summarize my inbox.
-
-Provide:
-
-- Important emails
-- Opportunities
-- Deadlines
-- Recommended actions
-
-Keep it concise.
-`,
-  },
-];
-
-const SIDEBAR_ITEMS = [
-  { label: "Dashboard", icon: "☀️" },
-  { label: "Inbox", icon: "📥" },
-  { label: "Calendar", icon: "📅" },
-  { label: "Assistant", icon: "🤖", active: true },
-  { label: "Connect", icon: "🔌" },
-];
-
 const Page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
 
   const sendMessage = async (
     prompt: string
@@ -139,43 +66,6 @@ const Page = () => {
 
   return (
     <div className="flex h-screen bg-[#E8ECF0] font-sans text-[#1A2B35]">
-      {/* Global Sidebar */}
-      <aside className="w-[196px] flex flex-col bg-[#1A2B35] shrink-0">
-        <div className="px-[18px] py-5 border-b border-[#243A47]">
-          <span className="font-serif text-[16px] text-[#E8ECF0]">Clarify</span>
-        </div>
-
-        <nav className="p-3 flex flex-col gap-0.5">
-          {SIDEBAR_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md cursor-pointer ${item.active ? "bg-[#243A47]" : "hover:bg-[#1F3140]"
-                }`}
-            >
-              <span className="text-[15px] opacity-80">{item.icon}</span>
-              <span
-                className={`text-[13px] ${item.active ? "text-[#E8ECF0]" : "text-[#8EABB8]"
-                  }`}
-              >
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </nav>
-
-        <div className="mt-auto p-3 border-t border-[#243A47]">
-          <div className="flex items-center gap-2.5 px-1.5 py-2">
-            <div className="w-7 h-7 rounded-full bg-[#2D4A5E] flex items-center justify-center text-[11px] font-medium text-[#BDD0DA]">
-              {session?.user?.name?.slice(0, 2)?.toUpperCase() ?? "YN"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[12px] font-medium text-[#C8D8E5] truncate">
-                {session?.user?.name ?? "Your Name"}
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
 
       {/* Assistant Chat Area */}
       <main className="flex-1 flex flex-col bg-[#F4F6F7] min-w-0">
@@ -203,7 +93,7 @@ const Page = () => {
           {messages.length === 0 && !loading && (
             <div className="flex-1 flex items-center justify-center">
               <p className="text-[13px] text-[#9AA8B2]">
-                Ask Clarify anything about your inbox or calendar.
+                Ask Triagent anything about your inbox or calendar.
               </p>
             </div>
           )}
@@ -244,7 +134,7 @@ const Page = () => {
             sendMessage(input);
             setInput("");
           }}
-          className="px-6 py-4 border-t border-[#D1D9E0]"
+          className="px-6 py-8 border-t border-[#D1D9E0]"
         >
           <div className="flex items-center gap-2.5 bg-[#F4F6F7] border border-[#D1D9E0] rounded-full px-4 py-1">
             <input
