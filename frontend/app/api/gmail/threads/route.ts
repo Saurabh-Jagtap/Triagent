@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   const response = await fetch(
-    "http://localhost:8000/api/gmail/threads",
+    `${process.env.NEXT_PUBLIC_API_URL}/api/gmail/threads`,
     {
       headers: {
         "x-user-id": session.user.id,

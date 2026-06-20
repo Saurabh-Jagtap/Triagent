@@ -23,7 +23,7 @@ export const ComposeEmailModal = ({ open, onClose }: Props) => {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:8000/api/gmail/send",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/gmail/send`,
         {
           method: "POST",
           headers: {

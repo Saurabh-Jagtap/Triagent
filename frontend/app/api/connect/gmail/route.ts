@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   const backendUrl =
-    `http://localhost:8000/api/connect?plugin=gmail`;
+    `${process.env.NEXT_PUBLIC_API_URL}/api/connect?plugin=gmail`;
 
   const response = await fetch(backendUrl, {
     headers: {

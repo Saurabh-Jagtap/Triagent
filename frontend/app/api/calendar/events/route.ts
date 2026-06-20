@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   const response = await fetch(
-    "http://localhost:8000/api/calendar/events",
+    `${process.env.NEXT_PUBLIC_API_URL}/api/calendar/events`,
     {
       headers: {
         "x-user-id": session.user.id,

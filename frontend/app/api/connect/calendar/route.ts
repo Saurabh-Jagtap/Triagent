@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   const backendUrl =
-    `http://localhost:8000/api/connect?plugin=googlecalendar`;
+    `${process.env.NEXT_PUBLIC_API_URL}/api/connect?plugin=googlecalendar`;
 
   const response = await fetch(backendUrl, {
     headers: {

@@ -14,12 +14,29 @@ const app:Application = express();
 app.get('/', (req: Request, res: Response) => res.json({ message: "Hello from server",status: "ok" }))
 app.get("/health", (req: Request, res: Response) => res.json({ status: "ok" }));
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  'http://localhost:3000',
+  `${process.env.FRONTEND_URL}`
+];
+
+app.use(cors({ 
+  // origin: process.env.CLIENT_URL,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const isVercelPreview = origin.endsWith('vercel.app');
+    const isAllowed = allowedOrigins.indexOf(origin) !== -1;
+
+    if (isAllowed || isVercelPreview) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true 
+}));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api/gmail', emailRoutes)
