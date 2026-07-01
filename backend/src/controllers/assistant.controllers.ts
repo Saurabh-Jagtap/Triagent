@@ -21,7 +21,7 @@ export const assistantChat = async (
 
         return res.json({
             success: true,
-            answer: result.finalOutput
+            ...result
         });
 
     } catch (error) {

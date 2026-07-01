@@ -53,6 +53,8 @@ const AssistantContent = () => {
         throw new Error("Request failed")
       }
 
+      setMessages((prev)=> [...prev, ...data.messages])
+
       // setMessages((prev) => [
       //   ...prev,
       //   {
@@ -69,52 +71,52 @@ const AssistantContent = () => {
       //   }
       // ]);
 
-      setMessages((prev) => [
-        ...prev,
+//       setMessages((prev) => [
+//         ...prev,
 
-        {
-          id: crypto.randomUUID(),
-          role: "user",
-          type: "text",
-          content: prompt,
-        },
+//         {
+//           id: crypto.randomUUID(),
+//           role: "user",
+//           type: "text",
+//           content: prompt,
+//         },
 
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          type: "text",
-          content: data.answer,
-        },
+//         {
+//           id: crypto.randomUUID(),
+//           role: "assistant",
+//           type: "text",
+//           content: data.answer,
+//         },
 
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          type: "pending_action",
+//         {
+//           id: crypto.randomUUID(),
+//           role: "assistant",
+//           type: "pending_action",
 
-          pendingAction: {
-            id: crypto.randomUUID(),
+//           pendingAction: {
+//             id: crypto.randomUUID(),
 
-            tool: "gmail",
+//             tool: "gmail",
 
-            status: "pending",
+//             status: "pending",
 
-            payload: {
-              to: "saurabhworkspace123@gmail.com",
+//             payload: {
+//               to: "saurabhworkspace123@gmail.com",
 
-              subject: "Interview Scheduled",
+//               subject: "Interview Scheduled",
 
-              body: `Hi Saurabh,
+//               body: `Hi Saurabh,
 
-We have scheduled your interview for tomorrow at 12:00 PM IST.
+// We have scheduled your interview for tomorrow at 12:00 PM IST.
 
-Looking forward to speaking with you.
+// Looking forward to speaking with you.
 
-Regards,
-Triagent Team`,
-            },
-          },
-        },
-      ]);
+// Regards,
+// Triagent Team`,
+//             },
+//           },
+//         },
+//       ]);
 
     } catch (error) {
       console.error(error);

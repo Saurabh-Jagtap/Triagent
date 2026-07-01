@@ -47,6 +47,4 @@ export type ChatMessage =
       pendingAction: PendingAction;
     };
 
-export type ChatResponse = {
-  messages: ChatMessage[];
-};
+export type ChatResponse = {messages: ChatMessage[]};
