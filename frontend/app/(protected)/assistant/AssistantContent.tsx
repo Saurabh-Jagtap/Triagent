@@ -3,14 +3,17 @@ import { QUICK_ACTIONS } from '@/app/constants/assistant';
 import { useSession } from '@/utils/auth-client';
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from "next/navigation";
+import { ChatMessage, PendingAction } from '@/types/pending-action';
+import ActionCard from '@/components/chat/ActionCard';
+import TextMessage from '@/components/chat/TextMessage';
 
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-};
+// type Message = {
+//   role: "user" | "assistant";
+//   content: string;
+// };
 
 const AssistantContent = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -50,38 +53,99 @@ const AssistantContent = () => {
         throw new Error("Request failed")
       }
 
+      // setMessages((prev) => [
+      //   ...prev,
+      //   {
+      //     id: crypto.randomUUID(),
+      //     role: "user",
+      //     type: "text",
+      //     content: prompt
+      //   },
+      //   {
+      //     id: crypto.randomUUID(),
+      //     role: "assistant",
+      //     type: "text",
+      //     content: data.answer
+      //   }
+      // ]);
+
       setMessages((prev) => [
         ...prev,
+
         {
+          id: crypto.randomUUID(),
           role: "user",
+          type: "text",
           content: prompt,
         },
+
         {
+          id: crypto.randomUUID(),
           role: "assistant",
+          type: "text",
           content: data.answer,
+        },
+
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          type: "pending_action",
+
+          pendingAction: {
+            id: crypto.randomUUID(),
+
+            tool: "gmail",
+
+            status: "pending",
+
+            payload: {
+              to: "saurabhworkspace123@gmail.com",
+
+              subject: "Interview Scheduled",
+
+              body: `Hi Saurabh,
+
+We have scheduled your interview for tomorrow at 12:00 PM IST.
+
+Looking forward to speaking with you.
+
+Regards,
+Triagent Team`,
+            },
+          },
         },
       ]);
 
     } catch (error) {
       console.error(error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "user",
-          content: prompt,
-        },
-        {
-          role: "assistant",
-          content:
-            error instanceof Error
-              ? error.message
-              : "Something went wrong",
-        },
-      ]);
+      // setMessages((prev) => [
+      //   ...prev,
+      //   {
+      //     role: "user",
+      //     content: prompt,
+      //   },
+      //   {
+      //     role: "assistant",
+      //     content:
+      //       error instanceof Error
+      //         ? error.message
+      //         : "Something went wrong",
+      //   },
+      // ]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleApprove = (action: PendingAction) => {
+    console.log("APPROVED", action);
+  alert(`Sending ${action.tool}`);
+  };
+
+  const handleCancel = (action: PendingAction) => {
+    console.log("CANCELLED", action);
+  alert("Action cancelled");
   };
 
   useEffect(() => {
@@ -124,7 +188,7 @@ const AssistantContent = () => {
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto px-7 py-6 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto min-h-0 px-7 py-6 flex flex-col gap-4">
           {messages.length === 0 && !loading && (
             <div className="flex-1 flex items-center justify-center">
               <div className="flex flex-col items-center justify-center text-center">
@@ -140,22 +204,54 @@ const AssistantContent = () => {
             </div>
           )}
 
-          {messages.map((msg, index) => (
+          {/* {messages.map((msg, index) => (
             <div
               key={index}
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
-              {msg.role === "user" ? (
+              {msg.type === "text" && (
                 <div className="max-w-[78%] bg-[#2D4A5E] text-[#DCE7EE] text-[13px] leading-relaxed px-4 py-2.5 rounded-2xl rounded-br-sm whitespace-pre-wrap">
                   {msg.content}
+                  <TextMessage message={msg} />
                 </div>
-              ) : (
+              )}
+              {msg.type === "pending_action" && (
                 <div className="max-w-[70%] text-[13px] leading-relaxed text-[#1A2B35] whitespace-pre-wrap">
                   {msg.content}
+                  <ActionCard
+                    action={msg.pendingAction!}
+                    onApprove={handleApprove}
+                    onCancel={handleCancel}
+                  />
                 </div>
               )}
             </div>
-          ))}
+          ))} */}
+
+          {messages.map((msg) => {
+            switch (msg.type) {
+              case "text":
+                return (
+                  <TextMessage
+                    key={msg.id}
+                    message={msg}
+                  />
+                );
+
+              case "pending_action":
+                return (
+                  <ActionCard
+                    key={msg.id}
+                    action={msg.pendingAction!}
+                    onApprove={handleApprove}
+                    onCancel={handleCancel}
+                  />
+                );
+
+              default:
+                return null;
+            }
+          })}
 
           {loading && (
             <div className="flex justify-start">
