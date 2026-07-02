@@ -50,7 +50,7 @@ const SignInPage = () => {
 
         const res = await signIn.social({
             provider: "google",
-            callbackURL: "/dashboard"
+            callbackURL: "/assistant"
         });
 
         setIsSubmitting(false)
