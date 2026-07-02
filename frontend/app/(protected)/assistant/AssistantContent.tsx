@@ -7,11 +7,6 @@ import { ChatMessage, PendingAction } from '@/types/pending-action';
 import ActionCard from '@/components/chat/ActionCard';
 import TextMessage from '@/components/chat/TextMessage';
 
-// type Message = {
-//   role: "user" | "assistant";
-//   content: string;
-// };
-
 const AssistantContent = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -49,92 +44,15 @@ const AssistantContent = () => {
       );
 
       const data = await res.json();
+      console.log(data)
       if (!res.ok) {
         throw new Error("Request failed")
       }
 
       setMessages((prev)=> [...prev, ...data.messages])
 
-      // setMessages((prev) => [
-      //   ...prev,
-      //   {
-      //     id: crypto.randomUUID(),
-      //     role: "user",
-      //     type: "text",
-      //     content: prompt
-      //   },
-      //   {
-      //     id: crypto.randomUUID(),
-      //     role: "assistant",
-      //     type: "text",
-      //     content: data.answer
-      //   }
-      // ]);
-
-//       setMessages((prev) => [
-//         ...prev,
-
-//         {
-//           id: crypto.randomUUID(),
-//           role: "user",
-//           type: "text",
-//           content: prompt,
-//         },
-
-//         {
-//           id: crypto.randomUUID(),
-//           role: "assistant",
-//           type: "text",
-//           content: data.answer,
-//         },
-
-//         {
-//           id: crypto.randomUUID(),
-//           role: "assistant",
-//           type: "pending_action",
-
-//           pendingAction: {
-//             id: crypto.randomUUID(),
-
-//             tool: "gmail",
-
-//             status: "pending",
-
-//             payload: {
-//               to: "saurabhworkspace123@gmail.com",
-
-//               subject: "Interview Scheduled",
-
-//               body: `Hi Saurabh,
-
-// We have scheduled your interview for tomorrow at 12:00 PM IST.
-
-// Looking forward to speaking with you.
-
-// Regards,
-// Triagent Team`,
-//             },
-//           },
-//         },
-//       ]);
-
     } catch (error) {
       console.error(error);
-
-      // setMessages((prev) => [
-      //   ...prev,
-      //   {
-      //     role: "user",
-      //     content: prompt,
-      //   },
-      //   {
-      //     role: "assistant",
-      //     content:
-      //       error instanceof Error
-      //         ? error.message
-      //         : "Something went wrong",
-      //   },
-      // ]);
     } finally {
       setLoading(false);
     }
@@ -205,30 +123,6 @@ const AssistantContent = () => {
               </div>
             </div>
           )}
-
-          {/* {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              {msg.type === "text" && (
-                <div className="max-w-[78%] bg-[#2D4A5E] text-[#DCE7EE] text-[13px] leading-relaxed px-4 py-2.5 rounded-2xl rounded-br-sm whitespace-pre-wrap">
-                  {msg.content}
-                  <TextMessage message={msg} />
-                </div>
-              )}
-              {msg.type === "pending_action" && (
-                <div className="max-w-[70%] text-[13px] leading-relaxed text-[#1A2B35] whitespace-pre-wrap">
-                  {msg.content}
-                  <ActionCard
-                    action={msg.pendingAction!}
-                    onApprove={handleApprove}
-                    onCancel={handleCancel}
-                  />
-                </div>
-              )}
-            </div>
-          ))} */}
 
           {messages.map((msg) => {
             switch (msg.type) {

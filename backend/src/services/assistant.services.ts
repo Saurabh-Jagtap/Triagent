@@ -1,34 +1,15 @@
-import { run } from "@openai/agents";
-import { assistantAgent } from "../agents/assistant.agent.js";
 import type { ChatResponse } from "@repo/db/src/chat.js"
+import { planningService } from "./planning.services.js";
+import { responseBuilder } from "./responseBuilder.services.js";
 
 export class AssistantService {
     async chat(
         userId: string,
         userMessage: string
-    ) {
-        const result = await run(
-            assistantAgent,
-            `
-TENANT_ID=${userId}
+    ): Promise<ChatResponse> {
 
-${userMessage}
-`,
-            {
-                maxTurns: 10,
-            }
-        );
-
-        return {
-            messages: [
-                {
-                    id: crypto.randomUUID(),
-                    role: "assistant",
-                    type: "text",
-                    content: result.finalOutput ?? ""
-                }
-            ]
-        };
+        const plan = await planningService.createPlan(userMessage);
+        return responseBuilder.build(plan);
     }
 }
 

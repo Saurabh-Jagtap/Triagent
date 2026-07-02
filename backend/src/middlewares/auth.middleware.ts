@@ -10,8 +10,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         });
     }
 
-    req.user = {
-        id: userId
-    }
+    req.user = {id: userId}
     next()
 }
