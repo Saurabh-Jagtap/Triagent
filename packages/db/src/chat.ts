@@ -2,6 +2,7 @@ export type ActionStatus =
   | "pending"
   | "approved"
   | "cancelled"
+  | "failed"
   | "completed";
 
 export type GmailPayload = {
@@ -46,5 +47,15 @@ export type ChatMessage =
       type: "pending_action";
       pendingAction: PendingAction;
     };
+
+export type TextMessage = Extract<
+  ChatMessage,
+  { type: "text" }
+>;
+
+export type PendingActionMessage = Extract<
+  ChatMessage,
+  { type: "pending_action" }
+>;
 
 export type ChatResponse = {messages: ChatMessage[]};

@@ -1,4 +1,4 @@
-import { GmailPayload } from "@/types/pending-action";
+import { GmailPayload } from "@repo/db/src/chat";
 
 type Props = {
     payload: GmailPayload;

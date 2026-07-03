@@ -3,9 +3,9 @@ import { QUICK_ACTIONS } from '@/app/constants/assistant';
 import { useSession } from '@/utils/auth-client';
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChatMessage, PendingAction } from '@/types/pending-action';
 import ActionCard from '@/components/chat/ActionCard';
 import TextMessage from '@/components/chat/TextMessage';
+import type { ActionStatus, ChatMessage, PendingAction } from "@repo/db/src/chat";
 
 const AssistantContent = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -49,7 +49,7 @@ const AssistantContent = () => {
         throw new Error("Request failed")
       }
 
-      setMessages((prev)=> [...prev, ...data.messages])
+      setMessages((prev) => [...prev, ...data.messages])
 
     } catch (error) {
       console.error(error);
@@ -58,15 +58,89 @@ const AssistantContent = () => {
     }
   };
 
-  const handleApprove = (action: PendingAction) => {
-    console.log("APPROVED", action);
-  alert(`Sending ${action.tool}`);
+  const handleApprove = async (action: PendingAction) => {
+    try {
+
+      if (!session) {
+        throw new Error("Unauthorized");
+      }
+
+      updatePendingActionStatus(
+        action.id,
+        "approved"
+      );
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/assistant/execute`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-id": session.user.id,
+          },
+          body: JSON.stringify({
+            action,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      updatePendingActionStatus(
+        action.id,
+        "completed"
+      );
+
+      setMessages((prev) => [
+        ...prev,
+        ...data.messages,
+      ]);
+
+    } catch (error) {
+      updatePendingActionStatus(
+        action.id,
+        "failed"
+      );
+      console.error(error);
+    }
+  };
+
+  const updatePendingActionStatus = (actionId: string, status: ActionStatus) => {
+
+    setMessages(prev =>
+      prev.map(message => {
+        if (message.type !== "pending_action") {
+          return message;
+        }
+
+        if (message.pendingAction.id !== actionId) {
+          return message;
+        }
+
+        const updatedMessage: ChatMessage = {
+          ...message,
+          pendingAction: {
+            ...message.pendingAction,
+            status,
+          },
+        };
+
+        return updatedMessage;
+      })
+    );
+
   };
 
   const handleCancel = (action: PendingAction) => {
-    console.log("CANCELLED", action);
-  alert("Action cancelled");
-  };
+  updatePendingActionStatus(
+    action.id,
+    "cancelled"
+  );
+};
 
   useEffect(() => {
     const prompt =

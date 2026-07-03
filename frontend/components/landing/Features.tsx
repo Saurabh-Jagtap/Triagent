@@ -1,67 +1,104 @@
-"use client"
-import { motion } from "framer-motion";
+const features = [
+  {
+    icon: "☀️",
+    title: "Daily Brief",
+    desc: "One morning summary of what matters — emails, meetings, what to act on.",
+    ask: "What's on my plate today?",
+    ans: "3 emails, no meetings. Sarah's is most urgent.",
+  },
+  {
+    icon: "📊",
+    title: "Priority Emails",
+    desc: "Sorted into high, medium, low — with a reason for each ranking.",
+    ask: "Sort my inbox by urgency.",
+    ans: "2 high, 3 medium, rest can wait.",
+  },
+  {
+    icon: "📅",
+    title: "Meeting Scheduler",
+    desc: "Book calls and draft invites in a single natural-language request.",
+    ask: "Book 30 min with Priya tomorrow.",
+    ans: "Booked 3pm. Invite drafted.",
+  },
+  {
+    icon: "✏️",
+    title: "Draft Replies",
+    desc: "Context-aware reply drafts in your tone, ready to review in seconds.",
+    ask: "Reply saying I'll review by noon.",
+    ans: "Draft ready to send.",
+  },
+  {
+    icon: "🔗",
+    title: "Gmail Connected",
+    desc: "Secure OAuth — read access only. Zero password storage. Revoke anytime.",
+    ask: "What emails need replies?",
+    ans: "4 unread. 2 need action.",
+  },
+  {
+    icon: "📆",
+    title: "Calendar Synced",
+    desc: "Your schedule pulled alongside your inbox, no app-switching needed.",
+    ask: "Am I free Thursday afternoon?",
+    ans: "Yes — 2pm to 5pm is clear.",
+  },
+];
 
-const fadeUp = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0 },
-};
+export default function Features() {
+  return (
+    <div id="features" className="feat-section">
+      <div className="feat-inner">
+        <p className="eyebrow">Features</p>
 
-export function Features() {
-    const features = [
-        {
-            title: "Daily Brief",
-            desc: "One clear morning summary of what matters across your inbox and calendar.",
-        },
-        {
-            title: "Priority Emails",
-            desc: "Emails sorted into high, medium, and low priority — with a reason for each.",
-        },
-        {
-            title: "Meeting Summaries",
-            desc: "Upcoming meetings, deadlines, and what needs preparation, all in one view.",
-        },
-        {
-            title: "Focus Today",
-            desc: "A straight answer to 'what should I actually do right now.'",
-        },
-        {
-            title: "Gmail integration",
-            desc: "Connects securely over OAuth. Read access only, revoke anytime.",
-        },
-        {
-            title: "Calendar integration",
-            desc: "Your schedule, pulled in alongside your inbox — no app-switching.",
-        },
-    ];
+        <h2 className="h2">
+          Everything your inbox demands.
+          <br />
+          Nothing it doesn't.
+        </h2>
 
-    return (
-        <section id="features" className="px-6 md:px-10 py-16 max-w-3xl mx-auto">
-            <div className="text-[12px] uppercase tracking-wide text-[#4A7FA0] mb-3.5">
-                Features
+        <p className="feat-hint">
+          Hover each card to see a real example.
+        </p>
+
+        <div className="feat-grid">
+          {features.map((f, i) => (
+            <div className="feat-wrap" key={f.title}>
+              <div className="feat-inner-wrap">
+                <div
+                  className="feat-front"
+                  style={{
+                    animationDelay: `${i * 0.08}s`,
+                  }}
+                >
+                  <div className="feat-icon">{f.icon}</div>
+
+                  <div className="feat-title">{f.title}</div>
+
+                  <div className="feat-desc">{f.desc}</div>
+                </div>
+
+                <div
+                  className="feat-back"
+                  style={{
+                    animationDelay: `${i * 0.08}s`,
+                  }}
+                >
+                  <div className="feat-back-label">
+                    ✦ Try asking
+                  </div>
+
+                  <div className="feat-ask">
+                    "{f.ask}"
+                  </div>
+
+                  <div className="feat-ans">
+                    → {f.ans}
+                  </div>
+                </div>
+              </div>
             </div>
-            <h2 className="font-serif text-[26px] md:text-[28px] leading-tight mb-10">
-                Everything your inbox demands.
-                <br />
-                Nothing it doesn&apos;t.
-            </h2>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {features.map((f, i) => (
-                    <motion.div
-                        key={f.title}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeUp}
-                        transition={{ duration: 0.35, delay: (i % 3) * 0.08 }}
-                        className="bg-white border border-[#D1D9E0] rounded-xl p-5 hover:-translate-y-0.5 hover:border-[#BDD0DA] transition-all duration-200"
-                    >
-                        <div className="w-8 h-8 rounded-md bg-[#EAF2F8] mb-3.5" />
-                        <div className="text-[14px] font-medium mb-1.5">{f.title}</div>
-                        <div className="text-[13px] text-[#4A5568] leading-relaxed">{f.desc}</div>
-                    </motion.div>
-                ))}
-            </div>
-        </section>
-    );
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

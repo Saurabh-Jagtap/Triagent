@@ -1,7 +1,7 @@
-import { ChatMessage } from "@/types/pending-action";
+import type { TextMessage } from "@repo/db/src/chat";
 
 type Props = {
-  message: ChatMessage;
+  message: TextMessage;
 };
 
 export default function TextMessage({ message }: Props) {

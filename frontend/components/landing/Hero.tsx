@@ -1,53 +1,42 @@
-"use client";
+"use client"
+import Link from "next/link";
+import HeroDemo from "./HeroDemo";
 
-import { signIn } from "@/utils/auth-client";
-
-export function Hero() {
-    const handleGoogleLogin =
-        async () => {
-            await signIn.social({
-                provider: "google",
-                callbackURL: "/dashboard",
-            });
-        };
-
+export default function Hero() {
     return (
-        <section className="px-6 md:px-10 pt-20 pb-16 max-w-3xl">
-            <div className="text-[12px] uppercase tracking-wide text-[#4A7FA0] mb-5">
-                Intelligent executive assistant
+        <section className="hero">
+            <canvas className="mesh" id="meshCanvas" />
+
+            <div className="hero-copy">
+                <div className="badge">
+                    <span className="badge-dot"></span>
+                    AI-powered inbox + calendar assistant
+                </div>
+
+                <h1 className="h1">
+                    Your inbox doesn't
+                    <br />
+                    manage itself.
+                    <br />
+                    <span className="h1-accent">Now it can.</span>
+                </h1>
+
+                <p className="hero-sub">
+                    Connect Gmail and Google Calendar. Ask Triagent to triage your inbox,
+                    draft replies, schedule meetings — in plain language.
+                </p>
+
+                <div className="cta-row">
+                    <Link href={"/signup"} className="btn-primary">Try it free</Link>
+                    <button className="btn-ghost">See it work ↓</button>
+                </div>
             </div>
-            <h1 className="font-serif text-[36px] md:text-[48px] leading-[1.12] mb-6 max-w-2xl">
-                Your inbox and calendar,
-                <br />
-                organized by intelligence.
-            </h1>
-            <p className="text-[15px] md:text-[16px] leading-relaxed text-[#4A5568] max-w-md mb-9">
-                Triagent connects to Gmail and Google Calendar, reads what matters, and
-                gives you a clear daily brief — so you spend less time sorting and
-                more time deciding.
-            </p>
-            <div className="flex flex-wrap items-center gap-3.5">
-                <button onClick={handleGoogleLogin} className="bg-[#2D4A5E] text-[#F4F6F7] text-[14px] font-medium px-7 py-3 rounded-lg">
-                    Continue with Google
-                </button>
-                <button
-                    className="border border-[#2D4A5E] text-[#2D4A5E] text-[14px] px-7 py-3 rounded-lg"
-                    onClick={() => {
-                        document
-                            .getElementById(
-                                "how-it-works"
-                            )
-                            ?.scrollIntoView({
-                                behavior: "smooth",
-                            });
-                    }}
-                >
-                    See how it works
-                </button>
+
+            <div className="hero-visual">
+                <HeroDemo />
             </div>
-            <p className="text-[12px] text-[#7A8B96] mt-5">
-                No credit card required · Read-only access by default · Revoke anytime
-            </p>
+
+            <div className="hero-fade"></div>
         </section>
     );
 }
