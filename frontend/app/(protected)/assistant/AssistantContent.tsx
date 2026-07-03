@@ -136,11 +136,11 @@ const AssistantContent = () => {
   };
 
   const handleCancel = (action: PendingAction) => {
-  updatePendingActionStatus(
-    action.id,
-    "cancelled"
-  );
-};
+    updatePendingActionStatus(
+      action.id,
+      "cancelled"
+    );
+  };
 
   useEffect(() => {
     const prompt =
