@@ -17,11 +17,10 @@ const AUTH_PAGES = [
 ];
 
 export function middleware(request: NextRequest) {
+  console.log("Cookies:", request.cookies.getAll())
   const { pathname } = request.nextUrl;
 
-  const hasSession = !!request.cookies.get(
-    "better-auth.session_token"
-  );
+  const hasSession = !!request.cookies.get("__Secure-better-auth.session_token") || !!request.cookies.get("better-auth.session_token");
 
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
     pathname === route || pathname.startsWith(`${route}/`)
