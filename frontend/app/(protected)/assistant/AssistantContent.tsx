@@ -26,22 +26,15 @@ const AssistantContent = () => {
         );
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/assistant/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            "x-user-id": session.user.id,
-          },
-
-          body: JSON.stringify({
-            message: prompt,
-          }),
-        }
-      );
+      const res = await fetch("/api/assistant/chat", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  message: prompt,
+              }),
+          });
 
       const data = await res.json();
       console.log(data)
