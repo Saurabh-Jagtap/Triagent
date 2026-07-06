@@ -10,20 +10,41 @@ export class ResponseBuilderService {
             content: plan.reply,
         };
 
-        const actionMessages: ChatMessage[] = plan.actions.map(
-            (action): ChatMessage => ({
-                id: crypto.randomUUID(),
-                role: "assistant",
-                type: "pending_action",
-                pendingAction: {
-                    id: crypto.randomUUID(),
-                    tool: action.tool,
-                    status: "pending",
-                    payload: action.payload,
-                    requiresApproval: true,
-                },
-            })
-        );
+        const actionMessages: ChatMessage[] = plan.actions.map(action => {
+
+            switch (action.tool) {
+
+                case "gmail":
+                    return {
+                        id: crypto.randomUUID(),
+                        role: "assistant" as const,
+                        type: "pending_action" as const,
+                        pendingAction: {
+                            id: crypto.randomUUID(),
+                            tool: "gmail" as const,
+                            status: "pending" as const,
+                            payload: action.payload,
+                            requiresApproval: true,
+                        },
+                    };
+
+                case "calendar":
+                    return {
+                        id: crypto.randomUUID(),
+                        role: "assistant" as const,
+                        type: "pending_action" as const,
+                        pendingAction: {
+                            id: crypto.randomUUID(),
+                            tool: "calendar" as const,
+                            status: "pending" as const,
+                            payload: action.payload,
+                            requiresApproval: true,
+                        },
+                    };
+
+            }
+
+        })
 
         return {
             messages: [

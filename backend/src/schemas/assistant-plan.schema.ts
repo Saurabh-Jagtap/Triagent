@@ -9,9 +9,27 @@ export const GmailActionSchema = z.object({
   }),
 });
 
+export const CalendarActionSchema = z.object({
+  tool: z.literal("calendar"),
+  payload: z.object({
+    title: z.string(),
+    attendees: z.array(z.string().email()),
+    startTime: z.string(),
+    endTime: z.string(),
+  }),
+});
+
+export const AssistantActionSchema = z.discriminatedUnion(
+  "tool",
+  [
+    GmailActionSchema,
+    CalendarActionSchema,
+  ]
+);
+
 export const AssistantPlanSchema = z.object({
   reply: z.string(),
-  actions: z.array(GmailActionSchema),
+  actions: z.array(AssistantActionSchema),
 });
 
 export type AssistantPlan = z.infer<typeof AssistantPlanSchema>;

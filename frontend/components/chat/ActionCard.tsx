@@ -1,6 +1,7 @@
 import { PendingAction } from "@repo/db/src/chat";
-import GmailPreview from "./actions/GmailPreview";
 import { Mail, Check, X } from "lucide-react";
+import GmailPreview from "./actions/GmailPreview";
+import CalendarPreview from "./actions/CalendarPreview";
 
 type Props = {
     action: PendingAction;
@@ -15,6 +16,20 @@ export default function ActionCard({ action, onApprove, onCancel }: Props) {
     const isCompleted = action.status === "completed";
     const isFailed = action.status === "failed";
     const isCancelled = action.status === "cancelled";
+
+    const renderPreview = () => {
+        switch (action.tool) {
+            case "gmail":
+                return (
+                    <GmailPreview payload={action.payload} />
+                );
+
+            case "calendar":
+                return (
+                    <CalendarPreview payload={action.payload} />
+                );
+        }
+    };
     return (
         <div className="w-full max-w-xl rounded-2xl border border-[#D1D9E0] bg-white shadow-sm">
             {/* Header */}
@@ -38,11 +53,7 @@ export default function ActionCard({ action, onApprove, onCancel }: Props) {
 
             {/* Preview */}
             <div className="p-5">
-                {action.tool === "gmail" && (
-                    <GmailPreview
-                        payload={action.payload}
-                    />
-                )}
+                {renderPreview()}
             </div>
 
             {/* Footer */}

@@ -42,21 +42,56 @@ Do not wrap it inside markdown.
 
 Do not explain anything.
 
-Return this exact structure:
+Return ONLY valid JSON.
+
+Do not wrap it inside markdown.
+
+Do not explain anything.
+
+Return this structure:
 
 {
   "reply": "string",
   "actions": [
-    {
-      "tool": "gmail",
-      "payload": {
-        "to": "...",
-        "subject": "...",
-        "body": "..."
-      }
-    }
+    ...
   ]
 }
+
+Supported action types:
+
+1. Gmail
+
+{
+  "tool": "gmail",
+  "payload": {
+    "to": "recipient@email.com",
+    "subject": "Email subject",
+    "body": "Email body"
+  }
+}
+
+2. Calendar
+
+{
+  "tool": "calendar",
+  "payload": {
+    "title": "Meeting title",
+    "attendees": [
+      "person@example.com"
+    ],
+    "startTime": "ISO-8601 datetime",
+    "endTime": "ISO-8601 datetime"
+  }
+}
+
+Rules:
+
+- Return one action for each external operation.
+- Multiple operations should become multiple actions.
+- Never merge unrelated actions.
+- Never execute anything.
+- Never fabricate success.
+- The reply should describe the prepared plan, not completed work.
 
 If no external action is required:
 
