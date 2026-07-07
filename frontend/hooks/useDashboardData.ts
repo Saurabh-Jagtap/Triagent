@@ -11,7 +11,7 @@ export const useDashboardData = () => {
     const { data: eventsData } = useQuery({
         queryKey: ["events"],
         queryFn: async () => {
-            const res = await fetch("api/calendar/events");
+            const res = await fetch("/api/calendar/events");
             return res.json();
         }
     })

@@ -2,7 +2,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { CheckCircle2 } from "lucide-react"
 
 export const ConnectedAccounts = () => {
-    const { emails, events, totalEmails, unreadEmails, recentEmails, upcomingEvents, upcomingMeetings } = useDashboardData()
+    const { emails, events } = useDashboardData()
 
     const connectedApps = [
         {

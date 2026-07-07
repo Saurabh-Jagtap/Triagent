@@ -3,7 +3,14 @@ import { getCalendarEventService } from '../services/calendar.services.js'
 
 export const getCalendarEvents = async(req:Request, res:Response) => {
     try {
-        const calendarEvents = await getCalendarEventService("dev")
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const calendarEvents = await getCalendarEventService(req.user.id)
     
         return res.status(200).json({success: true, data: calendarEvents})
     } catch (error) {
