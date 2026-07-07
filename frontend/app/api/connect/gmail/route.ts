@@ -1,26 +1,10 @@
-import { auth } from "@/utils/auth";
-import { headers } from "next/headers";
+import { forwardToBackend } from "@/lib/backend-client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
 
-  if (!session) {
-    return NextResponse.json(
-      { message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  const backendUrl =
-    `${process.env.NEXT_PUBLIC_API_URL}/api/connect?plugin=gmail`;
-
-  const response = await fetch(backendUrl, {
-    headers: {
-      "x-user-id": session.user.id,
-    },
+  const response = await forwardToBackend({
+    endpoint: "/api/connect?plugin=gmail",
     redirect: "manual",
   });
 

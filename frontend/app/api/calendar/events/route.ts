@@ -1,27 +1,11 @@
-import { auth } from "@/utils/auth";
-import { headers } from "next/headers";
+import { forwardToBackend } from "@/lib/backend-client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+
+  const response = await forwardToBackend({
+    endpoint: "/api/calendar/events",
   });
-
-  if (!session) {
-    return NextResponse.json(
-      { message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/calendar/events`,
-    {
-      headers: {
-        "x-user-id": session.user.id,
-      },
-    }
-  );
 
   const data = await response.json();
 

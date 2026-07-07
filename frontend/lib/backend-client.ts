@@ -5,12 +5,14 @@ type ForwardRequestOptions = {
   endpoint: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  redirect?: RequestRedirect
 };
 
 export async function forwardToBackend({
   endpoint,
   method = "GET",
   body,
+  redirect
 }: ForwardRequestOptions) {
 
   const session = await auth.api.getSession({
@@ -26,7 +28,7 @@ export async function forwardToBackend({
     {
       method,
       cache: "no-store",
-
+      redirect,
       headers: {
         "Content-Type": "application/json",
         "x-user-id": session.user.id,

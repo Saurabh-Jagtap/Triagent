@@ -27,14 +27,14 @@ const AssistantContent = () => {
       }
 
       const res = await fetch("/api/assistant/chat", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  message: prompt,
-              }),
-          });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: prompt,
+        }),
+      });
 
       const data = await res.json();
       console.log(data)
@@ -63,19 +63,15 @@ const AssistantContent = () => {
         "approved"
       );
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/assistant/execute`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-user-id": session.user.id,
-          },
-          body: JSON.stringify({
-            action,
-          }),
-        }
-      );
+      const res = await fetch("/api/assistant/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action,
+        }),
+      });
 
       const data = await res.json();
 

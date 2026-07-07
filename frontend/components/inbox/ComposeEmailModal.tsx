@@ -1,6 +1,5 @@
-import { useSession } from "@/utils/auth-client";
+"use client"
 import { useState } from "react";
-
 
 type Props = {
   open: boolean;
@@ -9,54 +8,36 @@ type Props = {
 
 export const ComposeEmailModal = ({ open, onClose }: Props) => {
   const [to, setTo] = useState("");
-
   const [subject, setSubject] = useState("");
-
   const [body, setBody] = useState("");
-
   const [loading, setLoading] = useState(false);
-
-  const { data: session, isPending } = useSession()
 
   const sendEmail = async () => {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/gmail/send`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
+      const res = await fetch("/api/gmail/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-            "x-user-id":
-              session?.user.id ?? "",
-          },
-
-          body: JSON.stringify({
-            to,
-            subject,
-            body,
-          }),
-        }
+        body: JSON.stringify({
+          to,
+          subject,
+          body,
+        }),
+      }
       );
 
-      const data =
-        await res.json();
+      const data = await res.json();
 
       if (!res.ok) {
-        alert(
-          data.message ??
-          "Failed"
-        );
-
+        alert(data.message ?? "Failed");
         return;
       }
 
-      alert(
-        "Email sent successfully"
-      );
+      alert("Email sent successfully");
 
       onClose();
     } finally {
