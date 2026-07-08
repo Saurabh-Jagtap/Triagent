@@ -1,5 +1,6 @@
 import type { ChatResponse, PendingAction } from "@repo/db/src/chat.js";
 import { EmailService } from "./email.services.js";
+import { CalendarService } from "./calendar.services.js";
 
 export class ExecutionService {
 
@@ -8,10 +9,11 @@ export class ExecutionService {
             case "gmail":
                 return this.executeGmailAction(userId, action);
 
+            case "calendar":
+                return this.executeCalendarAction(userId, action);
+
             default:
-                throw new Error(
-                    `Unsupported tool: ${action.tool}`
-                );
+                throw new Error(`Unsupported tool`);
         }
     }
 
@@ -36,6 +38,27 @@ export class ExecutionService {
         };
     }
 
+    private async executeCalendarAction(userId: string, action: Extract<PendingAction, { tool: "calendar" }>): Promise<ChatResponse> {
+
+        await CalendarService.createEvent({
+            tenantId: userId,
+            title: action.payload.title,
+            attendees: action.payload.attendees,
+            startTime: action.payload.startTime,
+            endTime: action.payload.endTime,
+        });
+
+        return {
+            messages: [
+                {
+                    id: crypto.randomUUID(),
+                    role: "assistant",
+                    type: "text",
+                    content: `✅ Calendar event "${action.payload.title}" created successfully.`,
+                },
+            ],
+        };
+    }
 }
 
 export const executionService = new ExecutionService();

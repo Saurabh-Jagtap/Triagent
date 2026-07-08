@@ -48,14 +48,8 @@ export type ChatMessage =
       pendingAction: PendingAction;
     };
 
-export type TextMessage = Extract<
-  ChatMessage,
-  { type: "text" }
->;
+export type TextMessage = Extract<ChatMessage,{ type: "text" }>;
 
-export type PendingActionMessage = Extract<
-  ChatMessage,
-  { type: "pending_action" }
->;
+export type PendingActionMessage = Extract<ChatMessage,{ type: "pending_action" }>;
 
 export type ChatResponse = {messages: ChatMessage[]};

@@ -47,15 +47,9 @@ export const getThreadsService = async (userId: string) => {
 };
 
 export class EmailService {
-    static async sendEmail({
-        tenantId,
-        to,
-        subject,
-        body,
-    }: SendEmailParams) {
+    static async sendEmail({tenantId,to,subject,body}: SendEmailParams) {
 
-        const tenant =
-            corsair.withTenant(tenantId);
+        const tenant =corsair.withTenant(tenantId);
 
         const email = [
             `To: ${to}`,
@@ -72,8 +66,6 @@ export class EmailService {
             .replace(/\//g, "_")
             .replace(/=+$/, "");
 
-        return tenant.gmail.api.messages.send({
-            raw,
-        });
+        return tenant.gmail.api.messages.send({raw});
     }
 }
