@@ -31,7 +31,7 @@ export async function forwardToBackend({
       redirect,
       headers: {
         "Content-Type": "application/json",
-        "x-user-id": session.user.id,
+        "x-user-id": session.session.userId,
         "x-internal-api-key": process.env.INTERNAL_API_KEY!,
       },
 

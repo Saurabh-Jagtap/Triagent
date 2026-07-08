@@ -1,16 +1,16 @@
-// import { corsair } from "./corsair.js";
+import { corsair } from "./corsair.js";
+import dotenv from "dotenv";
 
-// type CreateEventArgs = Parameters<
-//   typeof corsair
-//     .withTenant("test")
-//     .googlecalendar
-//     .api
-//     .events
-//     .create
-// >[0];
+dotenv.config();
 
-// // Intentionally empty to let TypeScript tell us
-// // what fields are required.
-// const test: CreateEventArgs = {};
+async function main() {
+  const status = await corsair.manage.connectionStatus.get({
+    tenantId: "DeUVIK6sT71ju7stdd7fMCSEYM3LoIrb",
+  });
 
-// console.log(test);
+  console.dir(status, {
+    depth: null,
+  });
+}
+
+main().catch(console.error);

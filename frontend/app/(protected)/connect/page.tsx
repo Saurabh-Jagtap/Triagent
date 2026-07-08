@@ -1,8 +1,51 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import { Calendar, Mail, ShieldCheck } from "lucide-react";
 
 const ConnectPage = () => {
+  const [status, setStatus] = useState<any>(null);
+
+  const fetchConnectionStatus = async () => {
+    try {
+      const res = await fetch("/api/connection-status");
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      setStatus(data.status);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchConnectionStatus();
+  }, []);
+
+  const disconnect = async (plugin: string) => {
+    try {
+      const res = await fetch(
+        `/api/disconnect?plugin=${plugin}`,
+        {
+          method: "POST",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      await fetchConnectionStatus();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const connectGmail = () => {
     window.location.href = "/api/connect/gmail";
   };
@@ -43,12 +86,21 @@ const ConnectPage = () => {
                 </p>
               </div>
 
-              <button
-                onClick={connectGmail}
-                className="flex-shrink-0 rounded-lg bg-[#2D4A5E] px-4 py-2 text-xs font-medium text-[#F4F6F7] transition-colors hover:bg-[#1A2B35]"
-              >
-                Connect Gmail
-              </button>
+              {status?.gmail === "connected" ? (
+                <button
+                  onClick={() => disconnect("gmail")}
+                  className="flex-shrink-0 rounded-lg bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-red-700"
+                >
+                  Disconnect
+                </button>
+              ) : (
+                <button
+                  onClick={connectGmail}
+                  className="flex-shrink-0 rounded-lg bg-[#2D4A5E] px-4 py-2 text-xs font-medium text-[#F4F6F7] hover:bg-[#1A2B35]"
+                >
+                  Connect Gmail
+                </button>
+              )}
             </div>
           </div>
 
@@ -68,12 +120,21 @@ const ConnectPage = () => {
                 </p>
               </div>
 
-              <button
-                onClick={connectCalendar}
-                className="flex-shrink-0 rounded-lg bg-[#2D4A5E] px-4 py-2 text-xs font-medium text-[#F4F6F7] transition-colors hover:bg-[#1A2B35]"
-              >
-                Connect Calendar
-              </button>
+              {status?.googlecalendar === "connected" ? (
+                <button
+                  onClick={() => disconnect("googlecalendar")}
+                  className="flex-shrink-0 rounded-lg bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-red-700"
+                >
+                  Disconnect
+                </button>
+              ) : (
+                <button
+                  onClick={connectCalendar}
+                  className="flex-shrink-0 rounded-lg bg-[#2D4A5E] px-4 py-2 text-xs font-medium text-[#F4F6F7] hover:bg-[#1A2B35]"
+                >
+                  Connect Calendar
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -8,16 +8,7 @@ type ConnectParams = {
 };
 
 export class ConnectService {
-    static async generateConnectionUrl({
-        plugin,
-        tenantId,
-        redirectUri,
-    }: ConnectParams) {
-        console.log({
-            plugin,
-            tenantId,
-            redirectUri,
-        });
+    static async generateConnectionUrl({ plugin, tenantId, redirectUri }: ConnectParams) {
         const { url, state } =
             await generateOAuthUrl(
                 corsair,
@@ -27,14 +18,7 @@ export class ConnectService {
                     redirectUri,
                 }
             );
-        console.log({
-            url,
-            state,
-        });
 
-        return {
-            url,
-            state,
-        };
+        return { url, state };
     }
 }
