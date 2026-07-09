@@ -17,7 +17,28 @@ const AssistantContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter()
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, loading]);
+
   const sendMessage = async (prompt: string) => {
+    if (!prompt.trim()) return;
+
+    setMessages(prev => [
+        ...prev,
+        {
+            id: crypto.randomUUID(),
+            role: "user",
+            type: "text",
+            content: prompt,
+        }
+    ]);
+
+    setLoading(true);
     try {
       setLoading(true);
       if (!session) {
@@ -37,7 +58,6 @@ const AssistantContent = () => {
       });
 
       const data = await res.json();
-      console.log(data)
       if (!res.ok) {
         throw new Error("Request failed")
       }
@@ -150,7 +170,7 @@ const AssistantContent = () => {
     <div className="flex h-screen bg-[#E8ECF0] font-sans text-[#1A2B35]">
 
       {/* Assistant Chat Area */}
-      <main className="flex-1 flex flex-col bg-[#F4F6F7] min-w-0">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#F4F6F7]">
         {/* Assistant Header */}
         <header className="px-6 py-3.5 border-b border-[#D1D9E0] bg-[#F4F6F7]">
           <h1 className="text-[13px] font-medium text-[#1A2B35]">Assistant</h1>
@@ -171,21 +191,23 @@ const AssistantContent = () => {
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto min-h-0 px-7 py-6 flex flex-col gap-4">
-          {messages.length === 0 && !loading && (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex flex-col items-center justify-center text-center">
-                <h2 className="mb-2 text-lg font-medium text-[#1A2B35]">
-                  Your AI Executive Assistant
-                </h2>
+        <div className="flex-1 min-h-0 overflow-y-auto px-7 py-6">
+          <div className="mx-auto flex w-full max-w-4xl flex-col gap-5">
+            {messages.length === 0 && !loading && (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <h2 className="mb-2 text-lg font-medium text-[#1A2B35]">
+                    Your AI Executive Assistant
+                  </h2>
 
-                <p className="max-w-md text-sm text-[#7A8B96]">
-                  Manage emails, schedule meetings, summarize your inbox,
-                  and coordinate your calendar from a single conversation.
-                </p>
+                  <p className="max-w-md text-sm text-[#7A8B96]">
+                    Manage emails, schedule meetings, summarize your inbox,
+                    and coordinate your calendar from a single conversation.
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {messages.map((msg) => {
             switch (msg.type) {
@@ -222,34 +244,40 @@ const AssistantContent = () => {
               </div>
             </div>
           )}
+
+          <div ref={bottomRef} />
         </div>
 
         {/* Input Composer */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            sendMessage(input);
+            const prompt = input.trim();
+            if (!prompt) return;
             setInput("");
+            sendMessage(prompt);
           }}
-          className="sticky bottom-0 px-6 py-4 border-t border-[#D1D9E0] bg-[#F4F6F7] backdrop-blur"
+          className=" border-t border-[#D1D9E0] bg-[#F4F6F7] px-6 py-4"
         >
-          <div className="flex items-center gap-3 rounded-2xl border-2 border-[#BDD0DA] bg-white px-5 py-3 shadow-sm">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Triagent to manage email, schedule meetings, or plan your day..."
-              className="flex-1 bg-transparent text-sm text-[#1A2B35] outline-none placeholder:text-[#7A8B96]"
-            />
-            <button
-              type="submit"
-              disabled={loading || !input.trim()}
-              className="h-10 w-10 rounded-xl bg-[#2D4A5E] flex items-center justify-center shrink-0 transition-all hover:bg-[#26404F] hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F4F6F7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="19" x2="12" y2="5" />
-                <polyline points="5 12 12 5 19 12" />
-              </svg>
-            </button>
+          <div className="mx-auto w-full max-w-4xl">
+            <div className="flex items-center gap-3 rounded-2xl border-2 border-[#BDD0DA] bg-white px-5 py-3 shadow-sm">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask Triagent to manage email, schedule meetings, or plan your day..."
+                className="flex-1 bg-transparent text-sm text-[#1A2B35] outline-none placeholder:text-[#7A8B96]"
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                className="h-10 w-10 rounded-xl bg-[#2D4A5E] flex items-center justify-center shrink-0 transition-all hover:bg-[#26404F] hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F4F6F7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
+                </svg>
+              </button>
+            </div>
           </div>
         </form>
       </main>
