@@ -8,7 +8,7 @@ import { RecentEmails } from '@/components/dashboard/RecentEmails'
 import { ConnectedAccounts } from '@/components/dashboard/ConnectedAccounts'
 
 const Page = () => {
-  const { data: sessionData, isPending } = useSession()
+  const { isPending } = useSession()
 
   if (isPending) {
     return (

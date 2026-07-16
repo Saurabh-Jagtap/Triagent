@@ -2,10 +2,7 @@ import { pool } from "@repo/db";
 import { corsair } from "../corsair.js";
 
 export class IntegrationService {
-  async disconnect(
-    tenantId: string,
-    plugin: string
-  ) {
+  async disconnect(tenantId: string,plugin: string) {
     const client = await pool.connect();
 
     try {
