@@ -53,6 +53,19 @@ export class ResponseBuilderService {
             ],
         };
     }
+
+    buildReply(reply: string): ChatResponse {
+    return {
+        messages: [
+            {
+                id: crypto.randomUUID(),
+                role: "assistant",
+                type: "text",
+                content: reply,
+            },
+        ],
+    };
+}
 }
 
 export const responseBuilder = new ResponseBuilderService();

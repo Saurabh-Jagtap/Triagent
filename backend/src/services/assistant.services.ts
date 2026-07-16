@@ -1,12 +1,21 @@
 import type { ChatResponse } from "@repo/db/src/chat.js"
-import { planningService } from "./planning.services.js";
+import { conversationOrchestrator } from "../orchestrators/conversation.orchestrator.js";
 import { responseBuilder } from "./responseBuilder.services.js";
 
 export class AssistantService {
     async chat(userId: string, userMessage: string): Promise<ChatResponse> {
 
-        const plan = await planningService.createPlan(userMessage);
-        return responseBuilder.build(plan);
+        const result = await conversationOrchestrator.handleMessage(userId, userMessage);
+
+        if (result.type === "reply") {
+            return responseBuilder.buildReply(
+                result.reply,
+            );
+
+        }
+
+        return responseBuilder.build(result.plan);
+
     }
 }
 

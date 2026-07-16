@@ -19,17 +19,12 @@ export const CalendarActionSchema = z.object({
   }),
 });
 
-export const AssistantActionSchema = z.discriminatedUnion(
-  "tool",
-  [
-    GmailActionSchema,
-    CalendarActionSchema,
-  ]
-);
-
 export const AssistantPlanSchema = z.object({
-  reply: z.string(),
-  actions: z.array(AssistantActionSchema),
+    reply: z.string(),
+
+    actions: z.array(
+        GmailActionSchema
+    ),
 });
 
 export type AssistantPlan = z.infer<typeof AssistantPlanSchema>;

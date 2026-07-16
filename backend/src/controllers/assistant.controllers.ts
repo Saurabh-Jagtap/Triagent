@@ -1,10 +1,7 @@
 import type { Request, Response } from "express";
 import { assistantService } from "../services/assistant.services.js";
 
-export const assistantChat = async (
-    req: Request,
-    res: Response
-) => {
+export const assistantChat = async (req: Request, res: Response) => {
     try {
 
         if (!req.user?.id) {

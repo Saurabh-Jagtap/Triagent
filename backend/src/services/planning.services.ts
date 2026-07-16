@@ -1,21 +1,31 @@
 import { run } from "@openai/agents";
 import { plannerAgent } from "../agents/planner.agent.js";
 
-import {
-  AssistantPlanSchema,
-  type AssistantPlan,
-} from "../schemas/assistant-plan.schema.js";
+import { type AssistantPlan } from "../schemas/assistant-plan.schema.js";
 import { buildPlannerContext } from "../utils/planner-context.js";
+import type { PendingTask } from "../task/task.types.js";
 
 export class PlanningService {
 
-  async createPlan(prompt: string): Promise<AssistantPlan> {
+  async createPlan(task: PendingTask): Promise<AssistantPlan> {
 
     const plannerPrompt = `
 ${buildPlannerContext()}
 
-User Request:
-${prompt}
+Original User Request:
+
+${task.originalRequest}
+
+Collected Information:
+
+${JSON.stringify(task.collected, null, 2)}
+
+Current Task State:
+
+${JSON.stringify({
+      intent: task.intent,
+      missing: task.missing,
+    }, null, 2)}
 `;
 
     const result = await run(
@@ -27,9 +37,7 @@ ${prompt}
       throw new Error("Planner returned no output.");
     }
 
-    const json = JSON.parse(result.finalOutput);
-
-    return AssistantPlanSchema.parse(json);
+    return result.finalOutput;
   }
 
 }

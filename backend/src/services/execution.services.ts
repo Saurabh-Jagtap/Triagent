@@ -1,6 +1,7 @@
 import type { ChatResponse, PendingAction } from "@repo/db/src/chat.js";
 import { EmailService } from "./email.services.js";
 import { CalendarService } from "./calendar.services.js";
+import { taskManager } from "../task/task.manager.js";
 
 export class ExecutionService {
 
@@ -26,6 +27,8 @@ export class ExecutionService {
             body: action.payload.body,
         });
 
+        taskManager.clear(userId);
+
         return {
             messages: [
                 {
@@ -48,6 +51,8 @@ export class ExecutionService {
             endTime: action.payload.endTime,
         });
 
+        taskManager.clear(userId);
+        
         return {
             messages: [
                 {

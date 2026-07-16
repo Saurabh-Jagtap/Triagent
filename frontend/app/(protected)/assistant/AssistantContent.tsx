@@ -29,22 +29,21 @@ const AssistantContent = () => {
     if (!prompt.trim()) return;
 
     setMessages(prev => [
-        ...prev,
-        {
-            id: crypto.randomUUID(),
-            role: "user",
-            type: "text",
-            content: prompt,
-        }
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        role: "user",
+        type: "text",
+        content: prompt,
+      }
     ]);
 
+    setInput("");
     setLoading(true);
+    
     try {
-      setLoading(true);
       if (!session) {
-        throw new Error(
-          "Unauthorized"
-        );
+        throw new Error("Unauthorized");
       }
 
       const res = await fetch("/api/assistant/chat", {
@@ -58,14 +57,26 @@ const AssistantContent = () => {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        throw new Error("Request failed")
+        throw new Error(data.message ?? "Request failed");
       }
 
       setMessages((prev) => [...prev, ...data.messages])
 
     } catch (error) {
-      console.error(error);
+      setMessages(prev => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          type: "text",
+          content:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -254,7 +265,6 @@ const AssistantContent = () => {
             e.preventDefault();
             const prompt = input.trim();
             if (!prompt) return;
-            setInput("");
             sendMessage(prompt);
           }}
           className=" border-t border-[#D1D9E0] bg-[#F4F6F7] px-6 py-4"

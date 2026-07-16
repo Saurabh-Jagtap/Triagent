@@ -11,9 +11,7 @@ export const executeAction = async (req: Request, res: Response) => {
         message: "Unauthorized",
       });
     }
-console.log(
-  JSON.stringify(req.body, null, 2)
-);
+
     const { action } = ExecuteActionSchema.parse(req.body);
 
     const response = await executionService.executeAction(
