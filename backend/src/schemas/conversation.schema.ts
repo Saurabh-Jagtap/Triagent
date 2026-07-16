@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const MissingFieldSchema = z.enum([
+    // Gmail
     "recipientEmail",
 
-    "title",
-    "attendees",
+    // Calendar
+    "attendeeEmails",
     "startTime",
-    "endTime",
 ]);
 
 export const IntentSchema = z.enum([
@@ -27,15 +27,14 @@ export const ConversationStateSchema = z.enum([
 ]);
 
 export const CollectedSchema = z.object({
+    // Gmail
     recipientName: z.string().optional(),
     recipientEmail: z.string().optional(),
-    subject: z.string().optional(),
-    body: z.string().optional(),
 
-    title: z.string().optional(),
-    attendees: z.array(z.string()).optional(),
+    // Calendar
+    attendeeNames: z.array(z.string()).optional(),
+    attendeeEmails: z.array(z.string().email()).optional(),
     startTime: z.string().optional(),
-    endTime: z.string().optional(),
 });
 
 export const ConversationResultSchema = z.object({
