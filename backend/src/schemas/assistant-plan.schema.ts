@@ -20,11 +20,22 @@ export const CalendarActionSchema = z.object({
 });
 
 export const AssistantPlanSchema = z.object({
-    reply: z.string(),
+  reply: z.string(),
 
-    actions: z.array(
-        GmailActionSchema
-    ),
+  actions: z.array(
+    z.union([
+      GmailActionSchema,
+      CalendarActionSchema,
+    ])
+  ),
 });
+
+export type GmailAction = z.infer<typeof GmailActionSchema>;
+
+export type CalendarAction = z.infer<typeof CalendarActionSchema>;
+
+export type AssistantAction =
+  | GmailAction
+  | CalendarAction;
 
 export type AssistantPlan = z.infer<typeof AssistantPlanSchema>;
