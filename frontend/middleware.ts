@@ -17,7 +17,6 @@ const AUTH_PAGES = [
 ];
 
 export function middleware(request: NextRequest) {
-  console.log("Cookies:", request.cookies.getAll())
   const { pathname } = request.nextUrl;
 
   const hasSession = !!request.cookies.get("__Secure-better-auth.session_token") || !!request.cookies.get("better-auth.session_token");
