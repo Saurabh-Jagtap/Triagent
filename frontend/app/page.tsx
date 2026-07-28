@@ -18,6 +18,8 @@ import { Hero } from "@/components/landing/hero/Hero";
 import { Navbar } from "@/components/landing/hero/Navbar";
 import { StorySection } from "@/components/landing/story/StorySection";
 import { CapabilitiesSection } from "@/components/landing/capabilities/CapabilitiesSection";
+import TrustSection from "@/components/landing/trust/TrustSection";
+import CTASection from "@/components/landing/cta/CTASection";
 // import Hero from "../components/landing/mistralLanding";
 
 export default function Home() {
@@ -28,6 +30,8 @@ export default function Home() {
         <Hero />
         <StorySection />
         <CapabilitiesSection />
+        <TrustSection />
+        <CTASection />
       </main>
     </>
     // <div className="bg-[#F4F6F7] text-[#1A2B35] font-sans">
