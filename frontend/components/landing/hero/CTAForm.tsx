@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function CTAForm() {
   return (
     <form className="flex w-full max-w-xl flex-col gap-2 sm:flex-row">
@@ -20,8 +22,9 @@ export function CTAForm() {
         "
       />
 
-      <button
-        className="
+      <Link href={"/signup"}>
+        <button
+          className="
           h-14
           rounded-xl
           bg-[#161A2B]
@@ -31,9 +34,10 @@ export function CTAForm() {
           transition-all
           hover:bg-[#20263B]
         "
-      >
-        Get Started →
-      </button>
+        >
+          Get Started →
+        </button>
+      </Link>
     </form>
   );
 }

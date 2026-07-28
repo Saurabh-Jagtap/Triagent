@@ -12,7 +12,7 @@ export default function AuthHeader({
             <h1
                 className="
                     font-newsreader
-                    text-4xl
+                    text-3xl sm:text-4xl
                     font-medium
                     tracking-[-0.02em]
                     text-[#13294B]
@@ -24,9 +24,9 @@ export default function AuthHeader({
             <p
                 className="
                     mx-auto
-                    mt-3
+                    mt-2
                     max-w-xs
-                    text-sm
+                    text-sm sm:text-base
                     leading-7
                     text-[#5B6472]
                 "

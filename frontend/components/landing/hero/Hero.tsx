@@ -1,5 +1,5 @@
+import BackgroundPattern from "@/components/shared/BackgroundPattern";
 import { Container } from "../shared/Container";
-import { HeroBackground } from "./HeroBackground";
 import { HeroContent } from "./HeroContent";
 import { MorningBrief } from "./MorningBrief";
 
@@ -11,7 +11,7 @@ export function Hero() {
                     <HeroContent />
 
                     <div className="relative flex justify-center lg:justify-end">
-                        <HeroBackground />
+                        <BackgroundPattern />
                         <MorningBrief />
                     </div>
                 </div>

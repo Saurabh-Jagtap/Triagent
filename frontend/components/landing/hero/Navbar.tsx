@@ -1,5 +1,6 @@
 import Brand from "@/components/shared/Brand";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 
 const navigation = [
     {
@@ -38,13 +39,17 @@ export function Navbar() {
 
                 {/* Desktop Actions */}
                 <div className="hidden items-center gap-6 lg:flex">
-                    <button className="text-[15px] font-medium text-[#495468] transition-colors hover:text-[#13294B]">
-                        Login
-                    </button>
+                    <Link href={"/signin"}>
+                        <button className="text-[15px] font-medium text-[#495468] transition-colors hover:text-[#13294B]">
+                            Login
+                        </button>
+                    </Link>
+                    <Link href={"/signup"}>
+                        <button className="rounded-2xl bg-[#13294B] px-6 py-3 text-[15px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#19345F]">
+                            Get Started →
+                        </button>
+                    </Link>
 
-                    <button className="rounded-2xl bg-[#13294B] px-6 py-3 text-[15px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#19345F]">
-                        Get Started →
-                    </button>
                 </div>
 
                 {/* Mobile */}

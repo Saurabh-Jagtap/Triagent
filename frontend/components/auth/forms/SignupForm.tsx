@@ -20,15 +20,11 @@ export default function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSignup = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (
@@ -97,44 +93,44 @@ export default function SignupForm() {
 
       <form
         onSubmit={handleSignup}
-        className="mt-8 space-y-5"
+        className="mt-6 space-y-4"
       >
-        <AuthInput
-          id="name"
-          label="Full Name"
-          placeholder="Jordan Ellis"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <AuthInput
+            id="name"
+            label="Full Name"
+            placeholder="Jordan Ellis"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-        <AuthInput
-          id="email"
-          label="Email Address"
-          type="email"
-          placeholder="you@work-email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <AuthInput
+            id="email"
+            label="Email Address"
+            type="email"
+            placeholder="you@work-email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <AuthInput
-          id="password"
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <AuthInput
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <AuthInput
-          id="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          placeholder="••••••••"
-          value={confirmPassword}
-          onChange={(e) =>
-            setConfirmPassword(e.target.value)
-          }
-        />
+          <AuthInput
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
 
         <AuthButton
           disabled={isSubmitting}

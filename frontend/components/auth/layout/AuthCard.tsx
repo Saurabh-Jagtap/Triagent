@@ -1,33 +1,33 @@
+import { cn } from "@/lib/utils";
+
 interface AuthCardProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  size?: keyof typeof sizes;
 }
 
+const sizes = {
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-md lg:max-w-2xl",
+} as const;
+
 export default function AuthCard({
-    children,
+  children,
+  className,
+  size = "md",
 }: AuthCardProps) {
-    return (
-        <div
-            className="
-                mt-10
-                w-full
-
-                rounded-3xl
-
-                border
-                border-[#13294B]/5
-
-                bg-gradient-to-b
-                from-white
-                to-[#FBFAF7]
-
-                p-8
-
-                shadow-[0_1px_1px_rgba(19,41,75,0.04),0_46px_80px_-38px_rgba(19,41,75,0.28)]
-
-                md:p-11
-            "
-        >
-            {children}
-        </div>
-    );
+  return (
+    <div
+      className={cn(
+        "w-full rounded-2xl border border-[#E8E2D9] bg-white shadow-sm",
+        "p-5 sm:p-6 lg:p-8",
+        sizes[size],
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
 }

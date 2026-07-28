@@ -12,7 +12,7 @@ export default function AuthSwitch({
   linkText,
 }: AuthSwitchProps) {
   return (
-    <p className="mt-7 text-center text-sm text-[#5B6472]">
+    <p className="mt-5 text-center text-sm text-[#5B6472]">
       {label}{" "}
       <Link
         href={href}

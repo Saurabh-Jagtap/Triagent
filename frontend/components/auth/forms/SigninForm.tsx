@@ -72,7 +72,7 @@ export default function SigninForm() {
 
       <form
         onSubmit={handleSignIn}
-        className="mt-8 space-y-5"
+        className="mt-6 space-y-4"
       >
         <AuthInput
           id="email"
