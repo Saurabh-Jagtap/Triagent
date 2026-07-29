@@ -5,10 +5,7 @@ const REDIRECT_URI = `${process.env.APP_URL}/api/auth`;
 
 export const pendingStates = new Set<string>();
 
-export const connectController = async (
-    req: Request,
-    res: Response
-) => {
+export const connectController = async (req: Request, res: Response) => {
     try {
 
         const plugin = req.query.plugin as string;

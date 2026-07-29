@@ -9,6 +9,7 @@ import connectRoutes from './routes/connect.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import assistantRoutes from './routes/assistant.routes.js'
 import integrationRoutes from './routes/integration.routes.js'
+import webhookRoutes from './routes/webhook.routes.js'
 
 const app:Application = express();
 
@@ -46,6 +47,7 @@ app.use("/api/connect", connectRoutes)
 app.use("/api/integration", integrationRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/assistant', assistantRoutes)
+app.use('/api/webhooks', webhookRoutes)
 
 // global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
