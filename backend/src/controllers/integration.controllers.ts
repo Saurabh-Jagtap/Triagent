@@ -19,10 +19,7 @@ export const disconnectPlugin = async (req: Request, res: Response) => {
       });
     }
 
-    await integrationService.disconnect(
-      req.user.id,
-      plugin
-    );
+    await integrationService.disconnect(req.user.id, plugin);
 
     return res.json({
       success: true,
@@ -50,7 +47,7 @@ export const getConnectionStatus = async (req: Request, res: Response) => {
       });
     }
 
-    const status =await integrationService.getConnectionStatus(req.user.id);
+    const status = await integrationService.getConnectionStatus(req.user.id);
 
     return res.json({
       success: true,

@@ -1,8 +1,9 @@
 import { pool } from "@repo/db";
 import { corsair } from "../corsair.js";
+// import { ConnectedAccountsRepository } from "@repo/db/src/repositories/connectedAccounts.repository.js";
 
 export class IntegrationService {
-  async disconnect(tenantId: string,plugin: string) {
+  async disconnect(tenantId: string, plugin: string) {
     const client = await pool.connect();
 
     try {
@@ -95,6 +96,21 @@ export class IntegrationService {
         [accountId]
       );
 
+      // Delete from connected_accounts table
+      await client.query(
+        `
+  DELETE FROM connected_accounts
+  WHERE tenant_id = $1
+    AND provider = $2
+  `,
+        [tenantId, plugin],
+      );
+      // This is by using drizzle
+      // await ConnectedAccountsRepository.deleteByTenantAndProvider(
+      //   tenantId,
+      //   plugin,
+      // );
+
       await client.query("COMMIT");
     } catch (error) {
       await client.query("ROLLBACK");
@@ -111,5 +127,4 @@ export class IntegrationService {
   }
 }
 
-export const integrationService =
-  new IntegrationService();
+export const integrationService = new IntegrationService();

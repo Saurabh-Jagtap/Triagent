@@ -3,9 +3,7 @@ import { pool } from "./client.js";
 
 import * as schema from "./schema/index.js";
 
-export const db = drizzle(pool, {
-  schema,
-});
+export const db = drizzle(pool, { schema });
 
 export { pool };
 

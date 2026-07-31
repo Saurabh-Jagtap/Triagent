@@ -1,9 +1,6 @@
 import type { Request, Response } from "express";
-import { processOAuthCallback } from "corsair/oauth";
-
-import { corsair } from "../corsair.js";
 import { pendingStates } from "./connect.controllers.js";
-
+import { ConnectService } from "../services/connect.services.js";
 
 const REDIRECT_URI = `${process.env.APP_URL}/api/auth`;
 
@@ -38,14 +35,11 @@ export const authController = async (req: Request, res: Response) => {
   pendingStates.delete(state);
 
   try {
-    const result = await processOAuthCallback(
-      corsair,
-      {
-        code,
-        state,
-        redirectUri: REDIRECT_URI,
-      }
-    );
+    const result = await ConnectService.completeConnection({
+      code,
+      state,
+      redirectUri: REDIRECT_URI,
+    });
 
     res.redirect(`${process.env.FRONTEND_URL}/connect/success?plugin=${result.plugin}`)
   } catch (error) {

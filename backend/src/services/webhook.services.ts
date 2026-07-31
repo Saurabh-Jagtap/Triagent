@@ -1,16 +1,45 @@
 import type { Request } from "express";
 import { processWebhook } from "corsair";
 import { corsair } from "../corsair.js";
+import { ConnectedAccountsRepository } from "@repo/db/src/repositories/connectedAccounts.repository.js";
+import { PROVIDERS } from "../constants/providers.js";
 
 export class WebhookService {
-    private static resolveTenant(req: Request): string {
-        const tenantId = req.query.tenantId;
+    private static async resolveTenant(body: unknown): Promise<string> {
+        const email = this.decodeEmailFromPayload(body);
 
-        if (typeof tenantId !== "string") {
-            throw new Error("Missing tenantId");
+        const account = await ConnectedAccountsRepository.findByProviderAndIdentifier(
+            PROVIDERS.GMAIL,
+            email,
+        );
+
+        if (!account) {
+            throw new Error(`No connected account found for ${email}`);
         }
 
-        return tenantId;
+        return account.tenantId;
+    }
+
+    private static decodeEmailFromPayload(body: unknown): string {
+        if (!body || typeof body !== "object" || !("message" in body)) {
+            throw new Error("Invalid Pub/Sub payload");
+        }
+
+        const message = body.message as { data?: string };
+
+        if (!message.data) {
+            throw new Error("Missing Pub/Sub message data");
+        }
+
+        const decoded = JSON.parse(Buffer.from(message.data, "base64").toString("utf8")) as {
+            emailAddress?: string;
+        };
+
+        if (!decoded.emailAddress) {
+            throw new Error("Missing emailAddress");
+        }
+
+        return decoded.emailAddress.toLowerCase();
     }
 
     static async process(req: Request) {
@@ -27,8 +56,9 @@ export class WebhookService {
 
         const body = req.body;
 
-        const tenantId = this.resolveTenant(req);
+        const tenantId = await this.resolveTenant(body);
 
+        console.dir(body, { depth: null });
         const result = await processWebhook(
             corsair,
             headers,
