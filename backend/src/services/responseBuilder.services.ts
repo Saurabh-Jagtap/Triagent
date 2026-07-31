@@ -1,33 +1,34 @@
-import type { ChatMessage, ChatResponse } from "@repo/db/src/chat.js";
-import type { AssistantPlan } from "../schemas/assistant-plan.schema.js";
+import type { ChatResponse } from "@repo/db/src/chat.js";
+import type { ExecutionResult } from "../execution/execution.types.js";
 
 export class ResponseBuilderService {
-    build(plan: AssistantPlan): ChatResponse {
-        const replyMessage: ChatMessage = {
-            id: crypto.randomUUID(),
-            role: "assistant",
-            type: "text",
-            content: plan.reply,
-        };
-
+    buildExecutionResult(result: ExecutionResult): ChatResponse {
 
         return {
-            messages: [replyMessage],
+            messages: [
+                {
+                    id: crypto.randomUUID(),
+                    role: "assistant",
+                    type: "text",
+                    content: result.reply,
+                },
+            ],
         };
+
     }
 
     buildReply(reply: string): ChatResponse {
-    return {
-        messages: [
-            {
-                id: crypto.randomUUID(),
-                role: "assistant",
-                type: "text",
-                content: reply,
-            },
-        ],
-    };
-}
+        return {
+            messages: [
+                {
+                    id: crypto.randomUUID(),
+                    role: "assistant",
+                    type: "text",
+                    content: reply,
+                },
+            ],
+        };
+    }
 }
 
 export const responseBuilder = new ResponseBuilderService();

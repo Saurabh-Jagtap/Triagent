@@ -1,6 +1,8 @@
+import { executorRegistry } from "../execution/index.js";
 import { chatService } from "../services/chat.services.js";
 import { conversationService } from "../services/conversation.services.js";
 import { planningService } from "../services/planning.services.js";
+import { responseBuilder } from "../services/responseBuilder.services.js";
 import { routingService } from "../services/routing.services.js";
 import { taskManager } from "../task/task.manager.js";
 import type { ConversationResponse } from "./orchestrators.types.js";
@@ -82,11 +84,19 @@ export class ConversationOrchestrator {
         }
 
         console.log(taskManager.get(userId));
+
         const plan = await planningService.createPlan(task);
 
         taskManager.markPlanning(userId);
 
-        return { type: "plan", plan };
+        const executor = executorRegistry.resolve(plan);
+
+        const executionResult = await executor.execute(plan);
+
+        return {
+            type: "execution",
+            result: executionResult,
+        };
 
     }
 }

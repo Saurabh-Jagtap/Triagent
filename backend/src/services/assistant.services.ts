@@ -8,13 +8,10 @@ export class AssistantService {
         const result = await conversationOrchestrator.handleMessage(userId, userMessage);
 
         if (result.type === "reply") {
-            return responseBuilder.buildReply(
-                result.reply,
-            );
-
+            return responseBuilder.buildReply(result.reply);
         }
 
-        return responseBuilder.build(result.plan);
+        return responseBuilder.buildExecutionResult(result.result);
 
     }
 }

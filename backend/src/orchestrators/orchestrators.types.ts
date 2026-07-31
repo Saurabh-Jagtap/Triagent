@@ -1,4 +1,4 @@
-import type { AssistantPlan } from "../schemas/assistant-plan.schema.js";
+import type { ExecutionResult } from "../execution/execution.types.js";
 
 export type ConversationResponse =
   | {
@@ -6,6 +6,6 @@ export type ConversationResponse =
       reply: string;
     }
   | {
-      type: "plan";
-      plan: AssistantPlan;
+      type: "execution";
+      result: ExecutionResult;
     };
