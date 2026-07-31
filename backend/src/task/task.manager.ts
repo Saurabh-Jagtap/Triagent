@@ -12,7 +12,8 @@ export class TaskManager {
     create(userId: string, result: ConversationResult, originalRequest: string) {
 
         const task: PendingTask = {
-            intent: result.intent,
+            goal: result.goal,
+            domain: result.domain,
             status: "collecting",
             collected: result.collected,
             missing: result.missing,
@@ -37,13 +38,18 @@ export class TaskManager {
         }
 
         const updated: PendingTask = {
-
             ...existing,
+
+            goal: existing.goal,
+            domain: existing.domain,
+
             collected: {
                 ...existing.collected,
                 ...result.collected,
             },
+
             missing: result.missing,
+
             updatedAt: new Date(),
         };
 

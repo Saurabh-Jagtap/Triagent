@@ -19,15 +19,42 @@ export const CalendarActionSchema = z.object({
   }),
 });
 
+export const OperationSchema = z.enum([
+  "search",
+  "summarize",
+  "compose",
+  "reply",
+  "schedule",
+  "create",
+  "update",
+  "delete",
+]);
+
+export const ResourceSchema = z.enum([
+  "message",
+  "messages",
+  "meeting",
+]);
+
+export const TaskSchema = z.object({
+  operation: OperationSchema,
+  resource: ResourceSchema,
+
+  recipientName: z.string().optional(),
+  recipientEmail: z.string().email().optional(),
+
+  attendeeNames: z.array(z.string()).optional(),
+  attendeeEmails: z.array(z.string().email()).optional(),
+
+  timeframe: z.string().optional(),
+  purpose: z.string().optional(),
+  startTime: z.string().optional(),
+});
+
 export const AssistantPlanSchema = z.object({
   reply: z.string(),
-
-  actions: z.array(
-    z.union([
-      GmailActionSchema,
-      CalendarActionSchema,
-    ])
-  ),
+  approvalRequired: z.boolean(),
+  task: TaskSchema,
 });
 
 export type GmailAction = z.infer<typeof GmailActionSchema>;

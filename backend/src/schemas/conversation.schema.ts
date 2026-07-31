@@ -26,6 +26,24 @@ export const ConversationStateSchema = z.enum([
     "ready",
 ]);
 
+export const GoalSchema = z.enum([
+    "search",
+    "summarize",
+    "send",
+    "reply",
+    "draft",
+    "schedule",
+    "create",
+    "update",
+    "delete",
+    "answer",
+]);
+
+export const DomainSchema = z.enum([
+    "gmail",
+    "calendar",
+]);
+
 export const CollectedSchema = z.object({
     // Gmail
     recipientName: z.string().optional(),
@@ -38,7 +56,8 @@ export const CollectedSchema = z.object({
 });
 
 export const ConversationResultSchema = z.object({
-    intent: IntentSchema,
+    goal: GoalSchema,
+    domain: DomainSchema,
     state: ConversationStateSchema,
     collected: CollectedSchema,
     missing: z.array(MissingFieldSchema),

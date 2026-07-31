@@ -3,54 +3,16 @@ import type { AssistantPlan } from "../schemas/assistant-plan.schema.js";
 
 export class ResponseBuilderService {
     build(plan: AssistantPlan): ChatResponse {
-        const textMessage: ChatMessage = {
+        const replyMessage: ChatMessage = {
             id: crypto.randomUUID(),
             role: "assistant",
             type: "text",
             content: plan.reply,
         };
 
-        const actionMessages: ChatMessage[] = plan.actions.map(action => {
-
-            switch (action.tool) {
-
-                case "gmail":
-                    return {
-                        id: crypto.randomUUID(),
-                        role: "assistant" as const,
-                        type: "pending_action" as const,
-                        pendingAction: {
-                            id: crypto.randomUUID(),
-                            tool: "gmail" as const,
-                            status: "pending" as const,
-                            payload: action.payload,
-                            requiresApproval: true,
-                        },
-                    };
-
-                case "calendar":
-                    return {
-                        id: crypto.randomUUID(),
-                        role: "assistant" as const,
-                        type: "pending_action" as const,
-                        pendingAction: {
-                            id: crypto.randomUUID(),
-                            tool: "calendar" as const,
-                            status: "pending" as const,
-                            payload: action.payload,
-                            requiresApproval: true,
-                        },
-                    };
-
-            }
-
-        })
 
         return {
-            messages: [
-                textMessage,
-                ...actionMessages,
-            ],
+            messages: [replyMessage],
         };
     }
 

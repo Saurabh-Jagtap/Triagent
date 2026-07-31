@@ -23,7 +23,8 @@ ${JSON.stringify(task.collected, null, 2)}
 Current Task State:
 
 ${JSON.stringify({
-      intent: task.intent,
+      goal: task.goal,
+      domain: task.domain,
       missing: task.missing,
     }, null, 2)}
 `;
@@ -32,6 +33,8 @@ ${JSON.stringify({
       plannerAgent,
       plannerPrompt
     );
+
+    console.dir(result.finalOutput, { depth: null });
 
     if (!result.finalOutput) {
       throw new Error("Planner returned no output.");
