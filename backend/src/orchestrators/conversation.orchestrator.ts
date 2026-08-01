@@ -91,7 +91,7 @@ export class ConversationOrchestrator {
 
         const executor = executorRegistry.resolve(plan);
 
-        const executionResult = await executor.execute(plan);
+        const executionResult = await executor.execute(plan, userId);
 
         return {
             type: "execution",

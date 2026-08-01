@@ -4,5 +4,5 @@ import type { ExecutionResult } from "./execution.types.js";
 export interface Executor {
   supports(plan: AssistantPlan): boolean;
 
-  execute(plan: AssistantPlan): Promise<ExecutionResult>;
+  execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult>;
 }

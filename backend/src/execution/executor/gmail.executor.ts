@@ -13,13 +13,13 @@ export class GmailExecutor implements Executor {
         );
     }
 
-    async execute(plan: AssistantPlan): Promise<ExecutionResult> {
+    async execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult> {
         const operation = this.operations.find(operation => operation.supports(plan));
 
         if (!operation) {
             throw new Error(`Unsupported Gmail operation: ${plan.task.operation}`);
         }
 
-        return operation.execute(plan);
+        return operation.execute(plan, tenantId);
     }
 }

@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { EmailService, getThreadsService } from "../services/email.services.js";
+import { EmailService } from "../services/email.services.js";
 
 export const getThreads = async (req: Request, res: Response) => {
     try {
@@ -11,7 +11,7 @@ export const getThreads = async (req: Request, res: Response) => {
                 message: "Unauthorized",
             });
         }
-        const threads = await getThreadsService(userId)
+        const threads = await EmailService.getDashboardThreads(userId)
 
         return res.status(200).json({ success: true, data: threads })
     } catch (error) {

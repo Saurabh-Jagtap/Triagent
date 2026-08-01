@@ -1,25 +1,23 @@
 import type { TextMessage } from "@repo/db/src/chat";
 import { User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   message: TextMessage;
 };
 
-export default function TextMessage({
-  message,
-}: Props) {
+export default function TextMessage({ message }: Props) {
   const isUser = message.role === "user";
 
   return (
     <div
-      className={`flex ${
-        isUser ? "justify-end" : "justify-start"
-      }`}
+      className={`flex ${isUser ? "justify-end" : "justify-start"
+        }`}
     >
       <div
-        className={`flex max-w-3xl flex-col gap-2 ${
-          isUser ? "items-end" : "items-start"
-        }`}
+        className={`flex max-w-4xl flex-col gap-2 ${isUser ? "items-end" : "items-start"
+          }`}
       >
         {/* Sender */}
 
@@ -116,33 +114,86 @@ export default function TextMessage({
           className={
             isUser
               ? `
-                rounded-2xl
-                rounded-tr-md
-                bg-slate-900
-                px-5
-                py-3
-                text-[15px]
-                leading-7
-                text-white
-                shadow-sm
-                whitespace-pre-wrap
-              `
+        rounded-2xl
+        rounded-tr-md
+        bg-slate-900
+        px-5
+        py-3
+        text-[15px]
+        leading-7
+        text-white
+        shadow-sm
+      `
               : `
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white
-                px-5
-                py-4
-                text-[15px]
-                leading-7
-                text-slate-700
-                shadow-sm
-                whitespace-pre-wrap
-              `
+        rounded-2xl
+        border
+        border-slate-200
+        bg-white
+        px-5
+        py-4
+        text-[15px]
+        leading-7
+        text-slate-700
+        shadow-sm
+      `
           }
         >
-          {message.content}
+          {isUser ? (
+            <div className="whitespace-pre-wrap">
+              {message.content}
+            </div>
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h2: ({ children }) => (
+                  <h2 className="mt-5 mb-3 text-lg font-semibold text-slate-900 first:mt-0">
+                    {children}
+                  </h2>
+                ),
+
+                h3: ({ children }) => (
+                  <h3 className="mt-4 mb-2 text-base font-semibold text-slate-800">
+                    {children}
+                  </h3>
+                ),
+
+                p: ({ children }) => (
+                  <p className="mb-3 last:mb-0">
+                    {children}
+                  </p>
+                ),
+
+                ul: ({ children }) => (
+                  <ul className="mb-4 list-disc space-y-1 pl-5">
+                    {children}
+                  </ul>
+                ),
+
+                ol: ({ children }) => (
+                  <ol className="mb-4 list-decimal space-y-1 pl-5">
+                    {children}
+                  </ol>
+                ),
+
+                li: ({ children }) => (
+                  <li>{children}</li>
+                ),
+
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-slate-900">
+                    {children}
+                  </strong>
+                ),
+
+                hr: () => (
+                  <hr className="my-4 border-slate-200" />
+                ),
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
         </div>
       </div>
     </div>

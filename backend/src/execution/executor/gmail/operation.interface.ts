@@ -5,6 +5,6 @@ export interface GmailOperation {
 
     supports(plan: AssistantPlan): boolean;
 
-    execute(plan: AssistantPlan): Promise<ExecutionResult>;
+    execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult>;
 
 }

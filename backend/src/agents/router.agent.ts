@@ -3,9 +3,7 @@ import { RouterResultSchema } from "../schemas/router.schema.js";
 
 export const routerAgent = new Agent({
     name: "Router Agent",
-
     model: "gpt-4.1-mini",
-
     outputType: RouterResultSchema,
 
     instructions: `
