@@ -1,5 +1,5 @@
 import { Agent } from "@openai/agents";
-import { AssistantPlanSchema } from "../schemas/assistant-plan.schema.js";
+import { AssistantPlanSchema } from "@repo/db/src/index.js";
 
 export const plannerAgent = new Agent({
     name: "Planning Agent",

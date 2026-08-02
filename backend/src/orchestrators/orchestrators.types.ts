@@ -1,11 +1,16 @@
+import type { AssistantPlan } from "@repo/db/src/index.js";
 import type { ExecutionResult } from "../execution/execution.types.js";
 
 export type ConversationResponse =
   | {
-      type: "reply";
-      reply: string;
-    }
+    type: "reply";
+    reply: string;
+  }
   | {
-      type: "execution";
-      result: ExecutionResult;
-    };
+    type: "plan";
+    plan: AssistantPlan;
+  }
+  | {
+    type: "execution";
+    result: ExecutionResult;
+  };

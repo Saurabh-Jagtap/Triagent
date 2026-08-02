@@ -1,10 +1,14 @@
 import type { AssistantPlan } from "../../schemas/assistant-plan.schema.js";
 import type { Executor } from "../execution.interface.js";
 import type { ExecutionResult } from "../execution.types.js";
+import { ComposeOperation } from "./gmail/compose.operation.js";
 import { SummarizeOperation } from "./gmail/summarize.operation.js";
 
 export class GmailExecutor implements Executor {
-    private operations = [new SummarizeOperation()];
+    private operations = [
+        new SummarizeOperation(),
+        new ComposeOperation(),
+    ];
 
     supports(plan: AssistantPlan): boolean {
         return (

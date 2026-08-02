@@ -1,3 +1,5 @@
+import { AssistantPlan } from "./schema";
+
 export type ActionStatus =
   | "pending"
   | "approved"
@@ -34,6 +36,13 @@ export type PendingAction =
     requiresApproval?: boolean;
   };
 
+export type ApprovalMessage = {
+    id: string;
+    role: "assistant";
+    type: "approval";
+    plan: AssistantPlan;
+};
+
 export type ChatMessage =
   | {
     id: string;
@@ -46,7 +55,8 @@ export type ChatMessage =
     role: "assistant";
     type: "pending_action";
     pendingAction: PendingAction;
-  };
+  }
+  | ApprovalMessage;
 
 
 export type TextMessage = Extract<ChatMessage, { type: "text" }>;

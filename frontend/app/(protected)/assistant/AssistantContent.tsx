@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ActionCard from '@/components/chat/ActionCard';
 import TextMessage from '@/components/chat/TextMessage';
 import type { ActionStatus, ChatMessage, PendingAction } from "@repo/db/src/chat";
+import ApprovalCard from '@/components/chat/ApprovalCard';
+import { AssistantPlan } from '@repo/db/src/schema';
 
 const AssistantContent = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -40,7 +42,7 @@ const AssistantContent = () => {
 
     setInput("");
     setLoading(true);
-    
+
     try {
       if (!session) {
         throw new Error("Unauthorized");
@@ -82,51 +84,52 @@ const AssistantContent = () => {
     }
   };
 
-  const handleApprove = async (action: PendingAction) => {
-    try {
+  const handleApprove = async (plan: AssistantPlan) => {
+    // try {
 
-      if (!session) {
-        throw new Error("Unauthorized");
-      }
+    //   if (!session) {
+    //     throw new Error("Unauthorized");
+    //   }
 
-      updatePendingActionStatus(
-        action.id,
-        "approved"
-      );
+    //   updatePendingActionStatus(
+    //     action.id,
+    //     "approved"
+    //   );
 
-      const res = await fetch("/api/assistant/execute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action,
-        }),
-      });
+    //   const res = await fetch("/api/assistant/execute", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       action,
+    //     }),
+    //   });
 
-      const data = await res.json();
+    //   const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message);
-      }
+    //   if (!res.ok) {
+    //     throw new Error(data.message);
+    //   }
 
-      updatePendingActionStatus(
-        action.id,
-        "completed"
-      );
+    //   updatePendingActionStatus(
+    //     action.id,
+    //     "completed"
+    //   );
 
-      setMessages((prev) => [
-        ...prev,
-        ...data.messages,
-      ]);
+    //   setMessages((prev) => [
+    //     ...prev,
+    //     ...data.messages,
+    //   ]);
 
-    } catch (error) {
-      updatePendingActionStatus(
-        action.id,
-        "failed"
-      );
-      console.error(error);
-    }
+    // } catch (error) {
+    //   updatePendingActionStatus(
+    //     action.id,
+    //     "failed"
+    //   );
+    //   console.error(error);
+    // }
+    console.log("Approved plan:", plan);
   };
 
   const updatePendingActionStatus = (actionId: string, status: ActionStatus) => {
@@ -155,11 +158,11 @@ const AssistantContent = () => {
 
   };
 
-  const handleCancel = (action: PendingAction) => {
-    updatePendingActionStatus(
-      action.id,
-      "cancelled"
-    );
+  const handleCancel = () => {
+    // updatePendingActionStatus(
+    //   action.id,
+    //   "cancelled"
+    // );
   };
 
   useEffect(() => {
@@ -230,11 +233,21 @@ const AssistantContent = () => {
                   />
                 );
 
-              case "pending_action":
+              // case "pending_action":
+              //   return (
+              //     <ActionCard
+              //       key={msg.id}
+              //       action={msg.pendingAction!}
+              //       onApprove={handleApprove}
+              //       onCancel={handleCancel}
+              //     />
+              //   );
+
+              case "approval":
                 return (
-                  <ActionCard
+                  <ApprovalCard
                     key={msg.id}
-                    action={msg.pendingAction!}
+                    plan={msg.plan}
                     onApprove={handleApprove}
                     onCancel={handleCancel}
                   />
