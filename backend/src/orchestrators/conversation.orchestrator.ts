@@ -1,3 +1,4 @@
+import type { TextArtifact } from "@repo/db/src/index.js";
 import { executorRegistry } from "../execution/index.js";
 import { chatService } from "../services/chat.services.js";
 import { conversationService } from "../services/conversation.services.js";
@@ -23,9 +24,14 @@ export class ConversationOrchestrator {
             case "chat": {
                 const result = await chatService.chat(message);
 
+                const artifact: TextArtifact = {
+                    kind: "text",
+                    content: result.reply,
+                };
+
                 return {
-                    type: "reply",
-                    reply: result.reply,
+                    type: "artifact",
+                    artifact,
                 };
 
             }
@@ -50,9 +56,14 @@ export class ConversationOrchestrator {
                     taskManager.clear(userId);
                 }
 
+                const artifact: TextArtifact = {
+                    kind: "text",
+                    content: "Okay, I've cancelled the current task.",
+                };
+
                 return {
-                    type: "reply",
-                    reply: "Okay, I've cancelled the current task.",
+                    type: "artifact",
+                    artifact,
                 };
             }
 
@@ -74,7 +85,15 @@ export class ConversationOrchestrator {
         const hasMissingFields = conversation.missing.length > 0;
 
         if (hasMissingFields) {
-            return { type: "reply", reply: conversation.reply };
+            const artifact: TextArtifact = {
+                kind: "text",
+                content: conversation.reply,
+            };
+
+            return {
+                type: "artifact",
+                artifact,
+            };
         }
 
         const task = taskManager.get(userId);
@@ -89,12 +108,10 @@ export class ConversationOrchestrator {
         taskManager.markPlanning(userId);
 
         if (plan.approvalRequired) {
-
             return {
-                type: "plan",
+                type: "approval",
                 plan,
             };
-
         }
 
         const executor = executorRegistry.resolve(plan);
@@ -104,8 +121,8 @@ export class ConversationOrchestrator {
         taskManager.clear(userId);
 
         return {
-            type: "execution",
-            result: executionResult,
+            type: "artifact",
+            artifact: executionResult.artifact,
         };
 
     }

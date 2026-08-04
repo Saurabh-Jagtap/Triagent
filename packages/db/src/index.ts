@@ -11,3 +11,6 @@ export { schema };
 
 // Re-export all tables directly
 export * from "./schema/index.js";
+export * from "./assistant-output.js";
+export * from "./chat.js";
+export * from "./artifacts/artifacts.js";

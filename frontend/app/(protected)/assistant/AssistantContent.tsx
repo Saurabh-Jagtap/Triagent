@@ -3,11 +3,9 @@ import { QUICK_ACTIONS } from '@/app/constants/assistant';
 import { useSession } from '@/utils/auth-client';
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from "next/navigation";
-import ActionCard from '@/components/chat/ActionCard';
-import TextMessage from '@/components/chat/TextMessage';
-import type { ActionStatus, ChatMessage, PendingAction } from "@repo/db/src/chat";
-import ApprovalCard from '@/components/chat/ApprovalCard';
+import type { ChatMessage } from "@repo/db/src/chat";
 import { AssistantPlan } from '@repo/db/src/schema';
+import MessageRenderer from '@/components/chat/MessageRenderer';
 
 const AssistantContent = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -84,86 +82,101 @@ const AssistantContent = () => {
     }
   };
 
-  const handleApprove = async (plan: AssistantPlan) => {
-    // try {
+ const handleApprove = async (plan: AssistantPlan) => {
+  try {
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
 
-    //   if (!session) {
-    //     throw new Error("Unauthorized");
-    //   }
+    setLoading(true);
 
-    //   updatePendingActionStatus(
-    //     action.id,
-    //     "approved"
-    //   );
+    const res = await fetch("/api/assistant/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        plan,
+      }),
+    });
 
-    //   const res = await fetch("/api/assistant/execute", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       action,
-    //     }),
-    //   });
+    const data = await res.json();
 
-    //   const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message ?? "Execution failed");
+    }
 
-    //   if (!res.ok) {
-    //     throw new Error(data.message);
-    //   }
+    setMessages((prev) => [
+      ...prev,
+      ...data.messages,
+    ]);
 
-    //   updatePendingActionStatus(
-    //     action.id,
-    //     "completed"
-    //   );
+  } catch (error) {
+    console.error(error);
 
-    //   setMessages((prev) => [
-    //     ...prev,
-    //     ...data.messages,
-    //   ]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        type: "text",
+        content:
+          error instanceof Error
+            ? error.message
+            : "Execution failed.",
+      },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    // } catch (error) {
-    //   updatePendingActionStatus(
-    //     action.id,
-    //     "failed"
-    //   );
-    //   console.error(error);
-    // }
-    console.log("Approved plan:", plan);
-  };
+  const handleCancel = async () => {
+  try {
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
 
-  const updatePendingActionStatus = (actionId: string, status: ActionStatus) => {
+    setLoading(true);
 
-    setMessages(prev =>
-      prev.map(message => {
-        if (message.type !== "pending_action") {
-          return message;
-        }
+    const res = await fetch("/api/assistant/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: "cancel",
+      }),
+    });
 
-        if (message.pendingAction.id !== actionId) {
-          return message;
-        }
+    const data = await res.json();
 
-        const updatedMessage: ChatMessage = {
-          ...message,
-          pendingAction: {
-            ...message.pendingAction,
-            status,
-          },
-        };
+    if (!res.ok) {
+      throw new Error(data.message ?? "Cancellation failed");
+    }
 
-        return updatedMessage;
-      })
-    );
+    setMessages((prev) => [
+      ...prev,
+      ...data.messages,
+    ]);
 
-  };
-
-  const handleCancel = () => {
-    // updatePendingActionStatus(
-    //   action.id,
-    //   "cancelled"
-    // );
-  };
+  } catch (error) {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        type: "text",
+        content:
+          error instanceof Error
+            ? error.message
+            : "Cancellation failed.",
+      },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const prompt =
@@ -223,40 +236,14 @@ const AssistantContent = () => {
             )}
           </div>
 
-          {messages.map((msg) => {
-            switch (msg.type) {
-              case "text":
-                return (
-                  <TextMessage
-                    key={msg.id}
-                    message={msg}
-                  />
-                );
-
-              // case "pending_action":
-              //   return (
-              //     <ActionCard
-              //       key={msg.id}
-              //       action={msg.pendingAction!}
-              //       onApprove={handleApprove}
-              //       onCancel={handleCancel}
-              //     />
-              //   );
-
-              case "approval":
-                return (
-                  <ApprovalCard
-                    key={msg.id}
-                    plan={msg.plan}
-                    onApprove={handleApprove}
-                    onCancel={handleCancel}
-                  />
-                );
-
-              default:
-                return null;
-            }
-          })}
+          {messages.map((message) => (
+            <MessageRenderer
+              key={message.id}
+              message={message}
+              onApprove={handleApprove}
+              onCancel={handleCancel}
+            />
+          ))}
 
           {loading && (
             <div className="flex justify-start">

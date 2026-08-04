@@ -51,10 +51,16 @@ export const TaskSchema = z.object({
   startTime: z.string().optional(),
 });
 
+const AssistantActionSchema = z.discriminatedUnion("tool", [
+    GmailActionSchema,
+    CalendarActionSchema,
+]);
+
 export const AssistantPlanSchema = z.object({
   reply: z.string(),
   approvalRequired: z.boolean(),
   task: TaskSchema,
+  action: AssistantActionSchema.optional(),
 });
 
 export type GmailAction = z.infer<typeof GmailActionSchema>;

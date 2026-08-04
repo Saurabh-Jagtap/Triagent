@@ -1,4 +1,5 @@
 import { AssistantPlan } from "@repo/db/src/schema";
+import PlanDetails from "./details/PlanDetails";
 
 type Props = {
   plan: AssistantPlan;
@@ -27,7 +28,7 @@ export default function ApprovalCard({
 
       <div className="space-y-5 px-6 py-5">
 
-        {renderDetails(plan)}
+        <PlanDetails plan={plan} />
 
         <div className="rounded-xl bg-slate-50 p-4">
           <p className="text-sm leading-6 text-slate-700">

@@ -1,4 +1,4 @@
-import type { AssistantPlan } from "../../schemas/assistant-plan.schema.js";
+import type { AssistantPlan } from "@repo/db/src/index.js";
 import type { Executor } from "../execution.interface.js";
 import type { ExecutionResult } from "../execution.types.js";
 import { ComposeOperation } from "./gmail/compose.operation.js";

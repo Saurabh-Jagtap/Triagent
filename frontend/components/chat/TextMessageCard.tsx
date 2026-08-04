@@ -7,7 +7,7 @@ type Props = {
   message: TextMessage;
 };
 
-export default function TextMessage({ message }: Props) {
+export default function TextMessageCard({ message }: Props) {
   const isUser = message.role === "user";
 
   return (

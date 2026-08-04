@@ -1,68 +1,23 @@
-import type { ChatResponse, PendingAction } from "@repo/db/src/chat.js";
-import { EmailService } from "./email.services.js";
-import { CalendarService } from "./calendar.services.js";
 import { taskManager } from "../task/task.manager.js";
+import type { AssistantOutput, AssistantPlan } from "@repo/db/src/index.js";
+import { executorRegistry } from "../execution/index.js";
 
 export class ExecutionService {
 
-    async executeAction(userId: string, action: PendingAction): Promise<ChatResponse> {
-        switch (action.tool) {
-            case "gmail":
-                return this.executeGmailAction(userId, action);
+    async executePlan(userId: string, plan: AssistantPlan): Promise<AssistantOutput> {
 
-            case "calendar":
-                return this.executeCalendarAction(userId, action);
+        const executor = executorRegistry.resolve(plan);
 
-            default:
-                throw new Error(`Unsupported tool`);
-        }
-    }
-
-    private async executeGmailAction(userId: string, action: Extract<PendingAction, { tool: "gmail" }>): Promise<ChatResponse> {
-
-        await EmailService.sendEmail({
-            tenantId: userId,
-            to: action.payload.to,
-            subject: action.payload.subject,
-            body: action.payload.body,
-        });
+        const result = await executor.execute(plan, userId);
 
         taskManager.clear(userId);
 
         return {
-            messages: [
-                {
-                    id: crypto.randomUUID(),
-                    role: "assistant",
-                    type: "text",
-                    content: `✅ Email sent successfully to ${action.payload.to}.`,
-                },
-            ],
+            type: "artifact",
+            artifact: result.artifact,
         };
-    }
 
-    private async executeCalendarAction(userId: string, action: Extract<PendingAction, { tool: "calendar" }>): Promise<ChatResponse> {
 
-        await CalendarService.createEvent({
-            tenantId: userId,
-            title: action.payload.title,
-            attendees: action.payload.attendees,
-            startTime: action.payload.startTime,
-            endTime: action.payload.endTime,
-        });
-
-        taskManager.clear(userId);
-        
-        return {
-            messages: [
-                {
-                    id: crypto.randomUUID(),
-                    role: "assistant",
-                    type: "text",
-                    content: `✅ Calendar event "${action.payload.title}" created successfully.`,
-                },
-            ],
-        };
     }
 }
 

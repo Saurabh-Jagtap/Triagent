@@ -12,12 +12,9 @@ export const executeAction = async (req: Request, res: Response) => {
       });
     }
 
-    const { action } = ExecuteActionSchema.parse(req.body);
+    const { plan } = ExecuteActionSchema.parse(req.body);
 
-    const response = await executionService.executeAction(
-      req.user.id,
-      action
-    );
+    const response = await executionService.executePlan(req.user.id, plan);
 
     return res.json({
       success: true,

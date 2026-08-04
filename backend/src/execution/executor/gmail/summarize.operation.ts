@@ -1,11 +1,10 @@
-import type { AssistantPlan } from "../../../schemas/assistant-plan.schema.js";
+import type { AssistantPlan, SummaryArtifact } from "@repo/db/src/index.js";
 import { EmailService } from "../../../services/email.services.js";
 import { summaryService } from "../../../services/summay.services.js";
 import type { ExecutionResult } from "../../execution.types.js";
 import type { GmailOperation } from "./operation.interface.js";
 
 export class SummarizeOperation implements GmailOperation {
-
     constructor(private readonly emailService = EmailService) { }
 
     supports(plan: AssistantPlan): boolean {
@@ -25,10 +24,18 @@ export class SummarizeOperation implements GmailOperation {
 
         const summary = await summaryService.summarize(emails);
 
+        const artifact: SummaryArtifact = {
+            kind: "summary",
+            title: "Today's Inbox",
+            content: summary.summary,
+            metadata: {
+                timeframe: plan.task.timeframe ?? "today",
+            },
+        };
+
         return {
             status: "completed",
-            reply: summary.summary,
-            summary,
+            artifact,
         };
 
     }

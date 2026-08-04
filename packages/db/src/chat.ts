@@ -1,64 +1,41 @@
-import { AssistantPlan } from "./schema";
-
-export type ActionStatus =
-  | "pending"
-  | "approved"
-  | "cancelled"
-  | "failed"
-  | "completed";
-
-export type GmailPayload = {
-  to: string;
-  subject: string;
-  body: string;
-};
-
-export type CalendarPayload = {
-  title: string;
-  attendees: string[];
-  startTime: string;
-  endTime: string;
-};
-
-export type PendingAction =
-  | {
-    id: string;
-    tool: "gmail";
-    status: ActionStatus;
-    payload: GmailPayload;
-    requiresApproval?: boolean;
-  }
-  | {
-    id: string;
-    tool: "calendar";
-    status: ActionStatus;
-    payload: CalendarPayload;
-    requiresApproval?: boolean;
-  };
-
-export type ApprovalMessage = {
-    id: string;
-    role: "assistant";
-    type: "approval";
-    plan: AssistantPlan;
-};
+import type { SummaryArtifact } from "./artifacts/artifacts";
+import type { AssistantPlan } from "./schema";
 
 export type ChatMessage =
   | {
-    id: string;
-    role: "user" | "assistant" | "system";
-    type: "text";
-    content: string;
-  }
+      id: string;
+      role: "user" | "assistant" | "system";
+      type: "text";
+      content: string;
+    }
   | {
-    id: string;
-    role: "assistant";
-    type: "pending_action";
-    pendingAction: PendingAction;
-  }
-  | ApprovalMessage;
+      id: string;
+      role: "assistant";
+      type: "summary";
+      summary: SummaryArtifact;
+    }
+  | {
+      id: string;
+      role: "assistant";
+      type: "approval";
+      plan: AssistantPlan;
+    };
 
+export type TextMessage = Extract<
+  ChatMessage,
+  { type: "text" }
+>;
 
-export type TextMessage = Extract<ChatMessage, { type: "text" }>;
-export type PendingActionMessage = Extract<ChatMessage, { type: "pending_action" }>;
-export type ChatResponse = { messages: ChatMessage[] };
+export type SummaryMessage = Extract<
+  ChatMessage,
+  { type: "summary" }
+>;
+
+export type ApprovalMessage = Extract<
+  ChatMessage,
+  { type: "approval" }
+>;
+
+export type ChatResponse = {
+  messages: ChatMessage[];
+};
