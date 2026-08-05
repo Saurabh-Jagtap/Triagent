@@ -6,6 +6,7 @@ import { planningService } from "../services/planning.services.js";
 import { routingService } from "../services/routing.services.js";
 import { taskManager } from "../task/task.manager.js";
 import type { ConversationResponse } from "./orchestrators.types.js";
+import { executionBuilderRegistry } from "../execution/execution-builders/index.js";
 
 
 export class ConversationOrchestrator {
@@ -107,16 +108,22 @@ export class ConversationOrchestrator {
 
         taskManager.markPlanning(userId);
 
+        const builder = executionBuilderRegistry.resolve(plan);
+        const executionPlan = await builder.build(plan);
+
+        console.log(
+            JSON.stringify(executionPlan, null, 2)
+        );
         if (plan.approvalRequired) {
             return {
                 type: "approval",
-                plan,
+                plan: executionPlan,
             };
         }
 
-        const executor = executorRegistry.resolve(plan);
+        const executor = executorRegistry.resolve(executionPlan);
 
-        const executionResult = await executor.execute(plan, userId);
+        const executionResult = await executor.execute(executionPlan, userId);
 
         taskManager.clear(userId);
 

@@ -4,7 +4,7 @@ import { useSession } from '@/utils/auth-client';
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from "next/navigation";
 import type { ChatMessage } from "@repo/db/src/chat";
-import { AssistantPlan } from '@repo/db/src/schema';
+import { ExecutionPlan } from '@repo/db/src/schema';
 import MessageRenderer from '@/components/chat/MessageRenderer';
 
 const AssistantContent = () => {
@@ -82,7 +82,7 @@ const AssistantContent = () => {
     }
   };
 
- const handleApprove = async (plan: AssistantPlan) => {
+ const handleApprove = async (plan: ExecutionPlan) => {
   try {
     if (!session) {
       throw new Error("Unauthorized");

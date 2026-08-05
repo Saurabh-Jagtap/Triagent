@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { ExecuteActionSchema } from "../schemas/execute-action.schema.js";
 import { executionService } from "../services/execution.services.js";
+import { responseBuilder } from "../services/responseBuilder.services.js";
 
 export const executeAction = async (req: Request, res: Response) => {
   try {
@@ -14,7 +15,9 @@ export const executeAction = async (req: Request, res: Response) => {
 
     const { plan } = ExecuteActionSchema.parse(req.body);
 
-    const response = await executionService.executePlan(req.user.id, plan);
+    const output = await executionService.executePlan(req.user.id, plan);
+
+    const response = responseBuilder.build(output);
 
     return res.json({
       success: true,

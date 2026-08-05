@@ -1,4 +1,4 @@
-import type { AssistantPlan } from "@repo/db/src/index.js";
+import type { ExecutionPlan } from "@repo/db/src/index.js";
 import type { Executor } from "../execution.interface.js";
 import type { ExecutionResult } from "../execution.types.js";
 import { ComposeOperation } from "./gmail/compose.operation.js";
@@ -10,14 +10,11 @@ export class GmailExecutor implements Executor {
         new ComposeOperation(),
     ];
 
-    supports(plan: AssistantPlan): boolean {
-        return (
-            plan.task.resource === "message" ||
-            plan.task.resource === "messages"
-        );
+    supports(plan: ExecutionPlan): boolean {
+        return plan.execution.tool === "gmail";
     }
 
-    async execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult> {
+    async execute(plan: ExecutionPlan, tenantId: string): Promise<ExecutionResult> {
         const operation = this.operations.find(operation => operation.supports(plan));
 
         if (!operation) {

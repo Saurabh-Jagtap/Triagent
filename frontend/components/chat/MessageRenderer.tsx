@@ -1,12 +1,12 @@
 import { ChatMessage } from "@repo/db/src/chat";
-import { AssistantPlan } from "@repo/db/src/schema";
+import { ExecutionPlan } from "@repo/db/src/schema";
 import TextMessageCard from "./TextMessageCard";
 import ApprovalCard from "./ApprovalCard";
 import SummaryMessageCard from "./SummaryMessageCard";
 
 type Props = {
     message: ChatMessage;
-    onApprove: (plan: AssistantPlan) => void;
+    onApprove: (plan: ExecutionPlan) => void;
     onCancel: () => void;
 };
 

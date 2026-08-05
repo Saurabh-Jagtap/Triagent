@@ -1,4 +1,4 @@
-import type { AssistantPlan, SummaryArtifact } from "@repo/db/src/index.js";
+import type { ExecutionPlan, SummaryArtifact } from "@repo/db/src/index.js";
 import { EmailService } from "../../../services/email.services.js";
 import { summaryService } from "../../../services/summay.services.js";
 import type { ExecutionResult } from "../../execution.types.js";
@@ -7,13 +7,13 @@ import type { GmailOperation } from "./operation.interface.js";
 export class SummarizeOperation implements GmailOperation {
     constructor(private readonly emailService = EmailService) { }
 
-    supports(plan: AssistantPlan): boolean {
+    supports(plan: ExecutionPlan): boolean {
 
         return plan.task.operation === "summarize";
 
     }
 
-    async execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult> {
+    async execute(plan: ExecutionPlan, tenantId: string): Promise<ExecutionResult> {
 
         const timeframe = (plan.task.timeframe as
             | "today"

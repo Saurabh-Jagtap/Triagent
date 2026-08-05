@@ -51,7 +51,7 @@ export const TaskSchema = z.object({
   startTime: z.string().optional(),
 });
 
-const AssistantActionSchema = z.discriminatedUnion("tool", [
+export const AssistantActionSchema = z.discriminatedUnion("tool", [
     GmailActionSchema,
     CalendarActionSchema,
 ]);

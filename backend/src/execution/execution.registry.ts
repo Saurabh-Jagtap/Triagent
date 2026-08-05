@@ -1,4 +1,4 @@
-import type { AssistantPlan } from "../schemas/assistant-plan.schema.js";
+import type { ExecutionPlan } from "@repo/db/src/index.js";
 import type { Executor } from "./execution.interface.js";
 import { CalendarExecutor } from "./executor/calendar.executor.js";
 import { GmailExecutor } from "./executor/gmail.executor.js";
@@ -6,23 +6,16 @@ import { GmailExecutor } from "./executor/gmail.executor.js";
 export class ExecutorRegistry {
 
     private executors = [
-
         new GmailExecutor(),
-
         new CalendarExecutor(),
-
     ];
 
-    resolve(plan: AssistantPlan): Executor {
+    resolve(plan: ExecutionPlan): Executor {
 
-        const executor = this.executors.find(
-            executor => executor.supports(plan)
-        );
+        const executor = this.executors.find(executor => executor.supports(plan));
 
         if (!executor) {
-            throw new Error(
-                `No executor found for ${plan.task.resource}`
-            );
+            throw new Error(`No executor found for ${plan.execution.tool}`);
         }
 
         return executor;

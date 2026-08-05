@@ -1,7 +1,7 @@
-import type { AssistantPlan } from "@repo/db/src/schema";
+import type { ExecutionPlan } from "@repo/db/src/schema";
 
 type Props = {
-  plan: AssistantPlan;
+  plan: ExecutionPlan;
 };
 
 export default function PlanDetails({
@@ -11,6 +11,11 @@ export default function PlanDetails({
   switch (plan.task.operation) {
 
     case "compose":
+      const execution = plan.execution;
+
+      if (execution.tool !== "gmail" ||execution.operation !== "compose") {
+        return null;
+      }
 
       return (
         <div className="space-y-4">
@@ -18,14 +23,18 @@ export default function PlanDetails({
           <Detail
             label="Recipient"
             value={`${plan.task.recipientName} <${plan.task.recipientEmail}>`}
+
           />
 
-          {plan.task.purpose && (
-            <Detail
-              label="Purpose"
-              value={plan.task.purpose}
-            />
-          )}
+          <Detail
+            label="Subject"
+            value={execution.payload.subject}
+          />
+
+          <Detail
+            label="Body"
+            value={execution.payload.body}
+          />
 
         </div>
       );

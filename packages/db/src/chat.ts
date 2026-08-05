@@ -1,5 +1,5 @@
 import type { SummaryArtifact } from "./artifacts/artifacts";
-import type { AssistantPlan } from "./schema";
+import type { ExecutionPlan } from "./schema";
 
 export type ChatMessage =
   | {
@@ -18,7 +18,7 @@ export type ChatMessage =
       id: string;
       role: "assistant";
       type: "approval";
-      plan: AssistantPlan;
+      plan: ExecutionPlan;
     };
 
 export type TextMessage = Extract<

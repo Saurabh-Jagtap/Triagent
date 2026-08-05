@@ -1,10 +1,10 @@
 import { taskManager } from "../task/task.manager.js";
-import type { AssistantOutput, AssistantPlan } from "@repo/db/src/index.js";
+import type { AssistantOutput, ExecutionPlan } from "@repo/db/src/index.js";
 import { executorRegistry } from "../execution/index.js";
 
 export class ExecutionService {
 
-    async executePlan(userId: string, plan: AssistantPlan): Promise<AssistantOutput> {
+    async executePlan(userId: string, plan: ExecutionPlan): Promise<AssistantOutput> {
 
         const executor = executorRegistry.resolve(plan);
 

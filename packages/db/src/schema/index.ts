@@ -3,3 +3,4 @@ export * from "./corsair.js"
 export * from "./email.js";
 export * from "./connectedAccounts.js";
 export * from "./assistant-plan.schema.js";
+export * from "./execution-plan.schema.js";

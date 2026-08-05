@@ -1,10 +1,7 @@
-import type { AssistantPlan } from "../../../schemas/assistant-plan.schema.js";
+import type { ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionResult } from "../../execution.types.js";
 
 export interface GmailOperation {
-
-    supports(plan: AssistantPlan): boolean;
-
-    execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult>;
-
+    supports(plan: ExecutionPlan): boolean;
+    execute(plan: ExecutionPlan, tenantId: string): Promise<ExecutionResult>;
 }

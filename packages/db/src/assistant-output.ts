@@ -1,5 +1,6 @@
 import type { Artifact } from "./artifacts/artifacts.js";
-import type { AssistantPlan } from "./schema/index.js";
+import { ExecutionPlan } from "./schema/execution-plan.schema.js";
+
 
 export type ArtifactOutput = {
   type: "artifact";
@@ -8,7 +9,7 @@ export type ArtifactOutput = {
 
 export type ApprovalOutput = {
   type: "approval";
-  plan: AssistantPlan;
+  plan: ExecutionPlan;
 };
 
 export type AssistantOutput =

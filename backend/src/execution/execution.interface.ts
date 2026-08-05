@@ -1,8 +1,8 @@
-import type { AssistantPlan } from "../schemas/assistant-plan.schema.js";
+import type { ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionResult } from "./execution.types.js";
 
 export interface Executor {
-  supports(plan: AssistantPlan): boolean;
+  supports(plan: ExecutionPlan): boolean;
 
-  execute(plan: AssistantPlan, tenantId: string): Promise<ExecutionResult>;
+  execute(plan: ExecutionPlan, tenantId: string): Promise<ExecutionResult>;
 }
