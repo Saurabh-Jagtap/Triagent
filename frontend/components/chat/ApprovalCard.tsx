@@ -1,5 +1,7 @@
+"use client"
 import { ExecutionPlan } from "@repo/db/src/schema";
 import PlanDetails from "./details/PlanDetails";
+import { useState } from "react";
 
 type Props = {
   plan: ExecutionPlan;
@@ -12,6 +14,7 @@ export default function ApprovalCard({
   onApprove,
   onCancel,
 }: Props) {
+  const [draft, setDraft] = useState(plan);
 
   return (
     <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -28,7 +31,7 @@ export default function ApprovalCard({
 
       <div className="space-y-5 px-6 py-5">
 
-        <PlanDetails plan={plan} />
+        <PlanDetails draft={draft} setDraft={setDraft}/>
 
       </div>
 
@@ -42,7 +45,7 @@ export default function ApprovalCard({
         </button>
 
         <button
-          onClick={() => onApprove(plan)}
+          onClick={() => onApprove(draft)}
           className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
         >
           Approve

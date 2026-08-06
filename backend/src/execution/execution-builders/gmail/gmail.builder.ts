@@ -1,6 +1,7 @@
 import type { AssistantPlan, ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionBuilder } from "../execution-builder.interface.js";
 import { gmailDraftService } from "../../../services/gmailDraft.services.js";
+import type { PendingTask } from "../../../task/task.types.js";
 
 export class GmailExecutionBuilder
     implements ExecutionBuilder {
@@ -12,12 +13,12 @@ export class GmailExecutionBuilder
         );
     }
 
-    async build(plan: AssistantPlan): Promise<ExecutionPlan> {
+    async build(plan: AssistantPlan, taskState: PendingTask): Promise<ExecutionPlan> {
 
         switch (plan.task.operation) {
 
             case "compose":
-                const draft = await gmailDraftService.generate(plan);
+                const draft = await gmailDraftService.generate(plan, taskState);
                 return {
                     reply: plan.reply,
                     task: plan.task,

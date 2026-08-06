@@ -82,101 +82,109 @@ const AssistantContent = () => {
     }
   };
 
- const handleApprove = async (plan: ExecutionPlan) => {
-  try {
-    if (!session) {
-      throw new Error("Unauthorized");
+  const handleApprove = async (plan: ExecutionPlan) => {
+    try {
+      if (!session) {
+        throw new Error("Unauthorized");
+      }
+
+      setLoading(true);
+      setMessages((prev) =>
+        prev.filter((message) =>
+          !(
+            message.role === "assistant" &&
+            message.type === "approval"
+          )
+        )
+      );
+
+      const res = await fetch("/api/assistant/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          plan,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message ?? "Execution failed");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        ...data.messages,
+      ]);
+
+    } catch (error) {
+      console.error(error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          type: "text",
+          content:
+            error instanceof Error
+              ? error.message
+              : "Execution failed.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(true);
-
-    const res = await fetch("/api/assistant/execute", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        plan,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message ?? "Execution failed");
-    }
-
-    setMessages((prev) => [
-      ...prev,
-      ...data.messages,
-    ]);
-
-  } catch (error) {
-    console.error(error);
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        type: "text",
-        content:
-          error instanceof Error
-            ? error.message
-            : "Execution failed.",
-      },
-    ]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleCancel = async () => {
-  try {
-    if (!session) {
-      throw new Error("Unauthorized");
+    try {
+      if (!session) {
+        throw new Error("Unauthorized");
+      }
+
+      setLoading(true);
+
+      const res = await fetch("/api/assistant/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "cancel",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message ?? "Cancellation failed");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        ...data.messages,
+      ]);
+
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          type: "text",
+          content:
+            error instanceof Error
+              ? error.message
+              : "Cancellation failed.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(true);
-
-    const res = await fetch("/api/assistant/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: "cancel",
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message ?? "Cancellation failed");
-    }
-
-    setMessages((prev) => [
-      ...prev,
-      ...data.messages,
-    ]);
-
-  } catch (error) {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        type: "text",
-        content:
-          error instanceof Error
-            ? error.message
-            : "Cancellation failed.",
-      },
-    ]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     const prompt =

@@ -1,19 +1,22 @@
 import type { ExecutionPlan } from "@repo/db/src/schema";
+import { Dispatch, SetStateAction } from "react";
 
 type Props = {
-  plan: ExecutionPlan;
+  draft: ExecutionPlan;
+  setDraft: Dispatch<SetStateAction<ExecutionPlan>>;
 };
 
 export default function PlanDetails({
-  plan,
+  draft,
+  setDraft,
 }: Props) {
 
-  switch (plan.task.operation) {
+  switch (draft.task.operation) {
 
     case "compose":
-      const execution = plan.execution;
+      const execution = draft.execution;
 
-      if (execution.tool !== "gmail" ||execution.operation !== "compose") {
+      if (execution.tool !== "gmail" || execution.operation !== "compose") {
         return null;
       }
 
@@ -22,19 +25,56 @@ export default function PlanDetails({
 
           <Detail
             label="Recipient"
-            value={`${plan.task.recipientName} <${plan.task.recipientEmail}>`}
+            value={`${draft.task.recipientName} <${draft.task.recipientEmail}>`}
 
           />
 
-          <Detail
-            label="Subject"
-            value={execution.payload.subject}
-          />
+          <div>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+              Subject
+            </p>
 
-          <Detail
-            label="Body"
-            value={execution.payload.body}
-          />
+            <input
+              value={execution.payload.subject}
+              onChange={(e) =>
+                setDraft({
+                  ...draft,
+                  execution: {
+                    ...execution,
+                    payload: {
+                      ...execution.payload,
+                      subject: e.target.value,
+                    },
+                  },
+                })
+              }
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+              Body
+            </p>
+
+            <textarea
+              rows={10}
+              value={execution.payload.body}
+              onChange={(e) =>
+                setDraft({
+                  ...draft,
+                  execution: {
+                    ...execution,
+                    payload: {
+                      ...execution.payload,
+                      body: e.target.value,
+                    },
+                  },
+                })
+              }
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-y"
+            />
+          </div>
 
         </div>
       );
@@ -46,12 +86,12 @@ export default function PlanDetails({
 
           <Detail
             label="Attendees"
-            value={plan.task.attendeeNames?.join(", ") ?? "-"}
+            value={draft.task.attendeeNames?.join(", ") ?? "-"}
           />
 
           <Detail
             label="Start Time"
-            value={plan.task.startTime ?? "-"}
+            value={draft.task.startTime ?? "-"}
           />
 
         </div>
