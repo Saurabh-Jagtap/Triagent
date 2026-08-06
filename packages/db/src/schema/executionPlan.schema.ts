@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TaskSchema } from "./assistant-plan.schema.js";
+import { TaskSchema } from "./assistantPlan.schema.js";
 
 const ComposeExecutionSchema = z.object({
     tool: z.literal("gmail"),

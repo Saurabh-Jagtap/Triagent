@@ -30,12 +30,6 @@ export default function ApprovalCard({
 
         <PlanDetails plan={plan} />
 
-        <div className="rounded-xl bg-slate-50 p-4">
-          <p className="text-sm leading-6 text-slate-700">
-            {plan.reply}
-          </p>
-        </div>
-
       </div>
 
       <div className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4">

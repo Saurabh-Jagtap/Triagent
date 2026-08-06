@@ -12,7 +12,7 @@ export type SummaryArtifact = {
 
 export type ApprovalArtifact = {
     kind: "approval";
-    plan: import("../schema/assistant-plan.schema").AssistantPlan;
+    plan: import("../schema/assistantPlan.schema").AssistantPlan;
 };
 
 export type ListArtifact = {

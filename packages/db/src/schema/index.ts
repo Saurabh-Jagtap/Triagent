@@ -2,5 +2,6 @@ export * from "./auth.js";
 export * from "./corsair.js"
 export * from "./email.js";
 export * from "./connectedAccounts.js";
-export * from "./assistant-plan.schema.js";
-export * from "./execution-plan.schema.js";
+export * from "./assistantPlan.schema.js";
+export * from "./executionPlan.schema.js";
+export * from "./gmailDraft.schema.js";

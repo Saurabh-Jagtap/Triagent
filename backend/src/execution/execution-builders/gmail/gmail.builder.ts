@@ -1,5 +1,6 @@
 import type { AssistantPlan, ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionBuilder } from "../execution-builder.interface.js";
+import { gmailDraftService } from "../../../services/gmailDraft.services.js";
 
 export class GmailExecutionBuilder
     implements ExecutionBuilder {
@@ -16,7 +17,7 @@ export class GmailExecutionBuilder
         switch (plan.task.operation) {
 
             case "compose":
-
+                const draft = await gmailDraftService.generate(plan);
                 return {
                     reply: plan.reply,
                     task: plan.task,
@@ -25,8 +26,8 @@ export class GmailExecutionBuilder
                         operation: "compose",
                         payload: {
                             to: plan.task.recipientEmail!,
-                            subject: "Temporary Subject",
-                            body: "Temporary Body",
+                            subject: draft.subject,
+                            body: draft.body,
                         },
                     },
                 };
