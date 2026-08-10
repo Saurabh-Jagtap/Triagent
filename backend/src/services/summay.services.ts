@@ -2,7 +2,7 @@ import { run } from "@openai/agents";
 
 import { summaryAgent } from "../agents/summary.agent.js";
 import type { EmailSummaryMessage } from "../types/email.types.js";
-import type { EmailSummary } from "../schemas/email-summary.schema.js";
+import type { EmailSummary } from "../schemas/emailSummary.schema.js";
 
 export class SummaryService {
 

@@ -9,8 +9,10 @@ export { pool };
 
 export { schema };
 
+export { eq } from "drizzle-orm";
+
 // Re-export all tables directly
 export * from "./schema/index.js";
-export * from "./assistant-output.js";
+export * from "./assistantOutput.js";
 export * from "./chat.js";
 export * from "./artifacts/artifacts.js";

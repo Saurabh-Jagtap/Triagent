@@ -1,5 +1,5 @@
-import type { SummaryArtifact } from "./artifacts/artifacts";
-import type { ExecutionPlan } from "./schema";
+import type { SummaryArtifact } from "./artifacts/artifacts.js";
+import type { ExecutionPlan } from "./schema/executionPlan.schema.js";
 
 export type ChatMessage =
   | {

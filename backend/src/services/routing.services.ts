@@ -2,7 +2,7 @@ import { run } from "@openai/agents";
 import { routerAgent } from "../agents/router.agent.js";
 import type { PendingTask } from "../task/task.types.js";
 import type { RouterResult } from "../schemas/router.schema.js";
-import { buildRouterContext } from "../utils/router-context.js";
+import { buildRouterContext } from "../utils/routerContext.js";
 
 export class RoutingService {
 

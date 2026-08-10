@@ -64,9 +64,9 @@ export class EmailService {
     return tenant.gmail.api.messages.send({ raw });
   }
 
-  private static getHeader(headers: Array<{ name: string; value: string }>,name: string): string | undefined {
+  private static getHeader(headers: Array<{ name: string; value: string }>, name: string): string | undefined {
     return headers.find(header => header.name === name)?.value;
-}
+  }
 
   static async getMessagesForSummary(tenantId: string, timeframe: "today" | "yesterday" | "week"): Promise<EmailSummaryMessage[]> {
     const messages = await corsair
@@ -75,13 +75,13 @@ export class EmailService {
         limit: 10,
       });
 
-      return messages.map((message) => ({
-  id: message.id,
-  from: message.data.from,
-  subject: message.data.subject,
-  snippet: message.data.snippet ?? message.data.body,
-  receivedAt: message.data.createdAt,
-}));
-      
+    return messages.map((message: typeof messages[number]) => ({
+      id: message.id,
+      from: message.data.from,
+      subject: message.data.subject,
+      snippet: message.data.snippet ?? message.data.body,
+      receivedAt: message.data.createdAt,
+    }));
+
   }
 }

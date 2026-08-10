@@ -1,5 +1,5 @@
 import { Agent } from "@openai/agents";
-import { EmailSummarySchema } from "../schemas/email-summary.schema.js";
+import { EmailSummarySchema } from "../schemas/emailSummary.schema.js";
 
 export const summaryAgent = new Agent({
   name: "Summary Agent",

@@ -1,3 +1,3 @@
 export type {
   ExecutionResult,
-} from "@repo/db/src/execution-result.js";
+} from "@repo/db/src/executionResult.js";

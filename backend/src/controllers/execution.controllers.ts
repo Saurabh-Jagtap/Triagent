@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ExecuteActionSchema } from "../schemas/execute-action.schema.js";
+import { ExecuteActionSchema } from "../schemas/executeAction.schema.js";
 import { executionService } from "../services/execution.services.js";
 import { responseBuilder } from "../services/responseBuilder.services.js";
 

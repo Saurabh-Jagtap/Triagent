@@ -1,6 +1,5 @@
 import { pool } from "@repo/db";
 import { corsair } from "../corsair.js";
-// import { ConnectedAccountsRepository } from "@repo/db/src/repositories/connectedAccounts.repository.js";
 
 export class IntegrationService {
   async disconnect(tenantId: string, plugin: string) {

@@ -15,7 +15,7 @@ export const CalendarActionSchema = z.object({
     title: z.string(),
     attendees: z.array(z.string().email()),
     startTime: z.string(),
-    endTime: z.string(),
+    endTime: z.string().optional(),
   }),
 });
 
@@ -49,11 +49,14 @@ export const TaskSchema = z.object({
   timeframe: z.string().optional(),
   purpose: z.string().optional(),
   startTime: z.string().optional(),
+
+  title: z.string().optional(),
+  endTime: z.string().optional(),
 });
 
 export const AssistantActionSchema = z.discriminatedUnion("tool", [
-    GmailActionSchema,
-    CalendarActionSchema,
+  GmailActionSchema,
+  CalendarActionSchema,
 ]);
 
 export const AssistantPlanSchema = z.object({

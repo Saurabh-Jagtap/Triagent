@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes.js'
 import assistantRoutes from './routes/assistant.routes.js'
 import integrationRoutes from './routes/integration.routes.js'
 import webhookRoutes from './routes/webhook.routes.js'
+import userRoutes from './routes/user.routes.js'
 
 const app:Application = express();
 
@@ -48,6 +49,7 @@ app.use("/api/integration", integrationRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/assistant', assistantRoutes)
 app.use('/api/webhooks', webhookRoutes)
+app.use('/api/user', userRoutes)
 
 // global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
