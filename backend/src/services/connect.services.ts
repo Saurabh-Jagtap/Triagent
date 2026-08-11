@@ -1,7 +1,7 @@
 import { generateOAuthUrl, processOAuthCallback } from "corsair/oauth";
 import { corsair } from "../corsair.js";
 import { PROVIDERS } from "../constants/providers.js";
-import { ConnectedAccountsRepository } from "@repo/db/src/repositories/connectedAccounts.repository.js";
+import { ConnectedAccountsRepository } from "@repo/db/src/index.js";
 
 type ConnectParams = {
     plugin: string;
@@ -36,8 +36,6 @@ export class ConnectService {
             redirectUri,
         });
 
-        console.log("OAuth callback result:");
-console.dir(result, { depth: null });
         // Only Gmail needs this mapping for webhook resolution
         if (result.plugin === PROVIDERS.GMAIL) {
             const profile = await this.getGmailProfile(result.tenantId);

@@ -1,8 +1,8 @@
 import type { Request } from "express";
 import { processWebhook } from "corsair";
 import { corsair } from "../corsair.js";
-import { ConnectedAccountsRepository } from "@repo/db/src/repositories/connectedAccounts.repository.js";
 import { PROVIDERS } from "../constants/providers.js";
+import { ConnectedAccountsRepository } from "@repo/db/src/index.js";
 
 export class WebhookService {
     private static async resolveTenant(body: unknown): Promise<string> {
