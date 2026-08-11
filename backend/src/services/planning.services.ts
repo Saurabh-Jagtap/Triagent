@@ -2,7 +2,7 @@ import { run } from "@openai/agents";
 import { plannerAgent } from "../agents/planner.agent.js";
 import { buildPlannerContext } from "../utils/plannerContext.js";
 import type { PendingTask } from "../task/task.types.js";
-import type { AssistantPlan } from "@repo/db/src/index.js";
+import type { AssistantPlan } from "@repo/db";
 
 export class PlanningService {
 

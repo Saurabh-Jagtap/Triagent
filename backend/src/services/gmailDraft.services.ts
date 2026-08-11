@@ -1,7 +1,7 @@
 import { run } from "@openai/agents";
-import type { AssistantPlan, GmailDraft } from "@repo/db/src/index.js";
 import { gmailDraftAgent } from "../agents/gmailDraft.agent.js";
 import type { PendingTask } from "../task/task.types.js";
+import type { AssistantPlan, GmailDraft } from "@repo/db";
 
 export class GmailDraftService {
     async generate(plan: AssistantPlan, taskState: PendingTask): Promise<GmailDraft> {

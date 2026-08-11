@@ -1,4 +1,3 @@
-import type { TextArtifact } from "@repo/db/src/index.js";
 import { executorRegistry } from "../execution/index.js";
 import { chatService } from "../services/chat.services.js";
 import { conversationService } from "../services/conversation.services.js";
@@ -7,6 +6,7 @@ import { routingService } from "../services/routing.services.js";
 import { taskManager } from "../task/task.manager.js";
 import type { ConversationResponse } from "./orchestrators.types.js";
 import { executionBuilderRegistry } from "../execution/execution-builders/index.js";
+import type { TextArtifact } from "@repo/db";
 
 
 export class ConversationOrchestrator {

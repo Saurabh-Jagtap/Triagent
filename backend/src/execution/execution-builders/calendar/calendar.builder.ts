@@ -1,9 +1,9 @@
-import type { AssistantPlan, ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionBuilder } from "../execution-builder.interface.js";
 import type { PendingTask } from "../../../task/task.types.js";
 import { UserService } from "../../../services/user.services.js";
 import { normalizeEndTime, normalizeStartTime } from "../../../utils/time.utils.js";
 import { calendarDraftService } from "../../../services/calendarDraft.services.js";
+import type { AssistantPlan, ExecutionPlan } from "@repo/db";
 
 export class CalendarExecutionBuilder
     implements ExecutionBuilder {

@@ -1,6 +1,6 @@
 import { taskManager } from "../task/task.manager.js";
-import type { AssistantOutput, ExecutionPlan } from "@repo/db/src/index.js";
 import { executorRegistry } from "../execution/index.js";
+import type { AssistantOutput, ExecutionPlan } from "@repo/db";
 
 export class ExecutionService {
 

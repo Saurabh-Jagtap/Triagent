@@ -1,5 +1,5 @@
 import { Agent } from "@openai/agents";
-import { CalendarDraftSchema } from "@repo/db/src/index.js";
+import { CalendarDraftSchema } from "@repo/db";
 
 export const calendarDraftAgent = new Agent({
     name: "Calendar Draft Agent",

@@ -1,7 +1,7 @@
-import type { AssistantPlan, ExecutionPlan } from "@repo/db/src/index.js";
 import type { ExecutionBuilder } from "../execution-builder.interface.js";
 import { gmailDraftService } from "../../../services/gmailDraft.services.js";
 import type { PendingTask } from "../../../task/task.types.js";
+import type { AssistantPlan, ExecutionPlan } from "@repo/db";
 
 export class GmailExecutionBuilder
     implements ExecutionBuilder {

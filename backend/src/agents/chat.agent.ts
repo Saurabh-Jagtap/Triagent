@@ -1,5 +1,4 @@
 import { Agent } from "@openai/agents";
-
 import { ChatResultSchema } from "../schemas/chat.schema.js";
 
 export const chatAgent = new Agent({

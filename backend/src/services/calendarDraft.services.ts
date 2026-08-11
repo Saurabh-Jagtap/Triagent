@@ -1,6 +1,6 @@
 import { run } from "@openai/agents";
-import type { AssistantPlan, CalendarDraft } from "@repo/db/src/index.js";
 import { calendarDraftAgent } from "../agents/calendarDraft.agent.js";
+import type { AssistantPlan, CalendarDraft } from "@repo/db";
 
 export class CalendarDraftService {
     async generate(plan: AssistantPlan): Promise<CalendarDraft> {

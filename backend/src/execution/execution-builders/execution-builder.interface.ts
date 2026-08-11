@@ -4,7 +4,6 @@ import type { PendingTask } from "../../task/task.types.js";
 export interface ExecutionBuilder {
 
     supports(plan: AssistantPlan): boolean;
-
     build(plan: AssistantPlan, taskState: PendingTask, userId: string): Promise<ExecutionPlan>;
 
 }

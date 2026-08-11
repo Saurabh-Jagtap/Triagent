@@ -1,5 +1,5 @@
 import { Agent } from "@openai/agents";
-import { GmailDraftSchema } from "@repo/db/src/index.js";
+import { GmailDraftSchema } from "@repo/db";
 
 export const gmailDraftAgent = new Agent({
     name: "Gmail Draft Agent",

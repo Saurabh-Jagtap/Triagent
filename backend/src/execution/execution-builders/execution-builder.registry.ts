@@ -1,7 +1,7 @@
-import type { AssistantPlan } from "@repo/db/src/index.js";
 import type { ExecutionBuilder } from "./execution-builder.interface.js";
 import { GmailExecutionBuilder } from "./gmail/gmail.builder.js";
 import { CalendarExecutionBuilder } from "./calendar/calendar.builder.js";
+import type { AssistantPlan } from "@repo/db";
 
 export class ExecutionBuilderRegistry {
 
