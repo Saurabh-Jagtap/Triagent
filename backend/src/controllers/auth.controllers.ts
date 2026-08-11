@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { ConnectService } from "../services/connect.services.js";
 
-const REDIRECT_URI = `${process.env.APP_URL}/api/auth`;
+const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI!;
 
 export const authController = async (req: Request, res: Response) => {
   const code = req.query.code as string | undefined;
