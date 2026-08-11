@@ -1,7 +1,7 @@
 import { generateOAuthUrl, processOAuthCallback } from "corsair/oauth";
 import { corsair } from "../corsair.js";
 import { PROVIDERS } from "../constants/providers.js";
-import { ConnectedAccountsRepository } from "@repo/db/src/index.js";
+import { ConnectedAccountsRepository } from "@repo/db";
 
 type ConnectParams = {
     plugin: string;

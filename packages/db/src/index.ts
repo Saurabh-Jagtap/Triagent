@@ -16,5 +16,4 @@ export * from "./schema/index.js";
 export * from "./assistantOutput.js";
 export * from "./chat.js";
 export * from "./artifacts/artifacts.js";
-
-export { ConnectedAccountsRepository } from "./repositories/connectedAccounts.repository.js";
+export * from "./repositories/connectedAccounts.repository.js";

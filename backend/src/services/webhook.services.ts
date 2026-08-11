@@ -2,7 +2,7 @@ import type { Request } from "express";
 import { processWebhook } from "corsair";
 import { corsair } from "../corsair.js";
 import { PROVIDERS } from "../constants/providers.js";
-import { ConnectedAccountsRepository } from "@repo/db/src/index.js";
+import { ConnectedAccountsRepository } from "@repo/db";
 
 export class WebhookService {
     private static async resolveTenant(body: unknown): Promise<string> {
@@ -43,7 +43,10 @@ export class WebhookService {
     }
 
     static async process(req: Request) {
-
+console.log("========== WEBHOOK REQUEST RECEIVED ==========");
+    console.log("Method:", req.method);
+    console.log("URL:", req.originalUrl);
+    console.log("Headers:", req.headers);
         const headers: Record<string, string> = {};
 
         Object.entries(req.headers).forEach(([key, value]) => {
@@ -58,7 +61,13 @@ export class WebhookService {
 
         const tenantId = await this.resolveTenant(body);
 
+        console.log("WEBHOOK TENANT DEBUG", {
+            tenantId,
+            tenantIdType: typeof tenantId,
+        });
+
         console.dir(body, { depth: null });
+
         const result = await processWebhook(
             corsair,
             headers,
@@ -70,7 +79,7 @@ export class WebhookService {
             tenantId,
             plugin: result.plugin,
             action: result.action,
-            success: result.response?.success,
+            response: result.response,
         });
 
         return result

@@ -49,8 +49,14 @@ app.use("/api/connect", connectRoutes)
 app.use("/api/integration", integrationRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/assistant', assistantRoutes)
-app.use('/api/webhooks', webhookRoutes)
 app.use('/api/user', userRoutes)
+
+app.use("/api/webhooks", (req, res, next) => {
+    console.log("========== WEBHOOK ROUTE HIT ==========");
+    console.log(req.method, req.originalUrl);
+    next();
+});
+app.use('/api/webhooks', webhookRoutes)
 
 // global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
