@@ -22,4 +22,21 @@ export class UserService {
         return currentUser;
     }
 
+    static async updateTimezone(userId: string, timezone: string) {
+        const [updatedUser] = await db
+            .update(user)
+            .set({ timezone })
+            .where(eq(user.id, userId))
+            .returning({
+                id: user.id,
+                timezone: user.timezone,
+            });
+
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+
+        return updatedUser;
+    }
+
 }

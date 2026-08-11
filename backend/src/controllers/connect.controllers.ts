@@ -3,8 +3,6 @@ import { ConnectService } from "../services/connect.services.js";
 
 const REDIRECT_URI = `${process.env.APP_URL}/api/auth`;
 
-export const pendingStates = new Set<string>();
-
 export const connectController = async (req: Request, res: Response) => {
     try {
 
@@ -31,8 +29,6 @@ export const connectController = async (req: Request, res: Response) => {
             tenantId,
             redirectUri: REDIRECT_URI,
         });
-
-        pendingStates.add(state);
 
         res.cookie(
             "oauth_state",

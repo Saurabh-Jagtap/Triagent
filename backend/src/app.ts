@@ -42,6 +42,7 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(express.json());
+
 app.use('/api/gmail', emailRoutes)
 app.use('/api/calendar', calendarRoutes)
 app.use("/api/connect", connectRoutes)

@@ -3,7 +3,6 @@ import type { AssistantPlan, CalendarDraft } from "@repo/db/src/index.js";
 import { calendarDraftAgent } from "../agents/calendarDraft.agent.js";
 
 export class CalendarDraftService {
-
     async generate(plan: AssistantPlan): Promise<CalendarDraft> {
 
         const input = {

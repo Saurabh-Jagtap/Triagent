@@ -13,7 +13,7 @@ export class GmailExecutionBuilder
         );
     }
 
-    async build(plan: AssistantPlan, taskState: PendingTask): Promise<ExecutionPlan> {
+    async build(plan: AssistantPlan, taskState: PendingTask, userId: string): Promise<ExecutionPlan> {
 
         switch (plan.task.operation) {
 

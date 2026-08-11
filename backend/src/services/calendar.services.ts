@@ -1,4 +1,5 @@
 import { corsair } from "../corsair.js";
+import { IntegrationNotConnectedError } from "../utils/integration.errors.js";
 
 type CreateCalendarEventParams = {
     tenantId: string;
@@ -9,7 +10,7 @@ type CreateCalendarEventParams = {
 };
 
 export const getCalendarEventService = async (userId: string) => {
-    return corsair
+    return await corsair
         .withTenant(userId)
         .googlecalendar
         .api
@@ -20,31 +21,42 @@ export const getCalendarEventService = async (userId: string) => {
 export class CalendarService {
     static async createEvent({ tenantId, title, attendees, startTime, endTime }: CreateCalendarEventParams) {
 
-        return corsair
-            .withTenant(tenantId)
-            .googlecalendar
-            .api
-            .events
-            .create({
-                calendarId: "primary",
+        try {
+            return await corsair
+                .withTenant(tenantId)
+                .googlecalendar
+                .api
+                .events
+                .create({
+                    calendarId: "primary",
 
-                event: {
-                    summary: title,
-                    attendees: attendees.map(email => ({
-                        email,
-                    })),
+                    event: {
+                        summary: title,
+                        attendees: attendees.map(email => ({
+                            email,
+                        })),
 
-                    start: {
-                        dateTime: startTime,
-                        timeZone: "Asia/Kolkata",
+                        start: {
+                            dateTime: startTime,
+                        },
+
+                        end: {
+                            dateTime: endTime,
+                        },
                     },
+                });
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : String(error);
 
-                    end: {
-                        dateTime: endTime,
-                        timeZone: "Asia/Kolkata",
-                    },
-                },
-            });
+            if (message.includes("Account not found") && message.includes("googlecalendar")) {
+                throw new IntegrationNotConnectedError("googlecalendar");
+            }
+
+            throw error;
+        }
 
     }
 }

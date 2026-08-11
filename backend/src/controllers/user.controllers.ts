@@ -1,34 +1,67 @@
 import type { Request, Response } from "express";
 import { UserService } from "../services/user.services.js";
 
-export const getMe = async (req: Request,res: Response) => {
-  try {
+export const getMe = async (req: Request, res: Response) => {
+    try {
+        if (!req.user?.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
 
-    if (!req.user?.id) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
+        const user = await UserService.getMe(req.user.id);
+
+        return res.json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to fetch user",
+        });
     }
+};
 
-    const user = await UserService.getMe(req.user.id);
+export const updateTimezone = async (req: Request, res: Response) => {
+    try {
+        if (!req.user?.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
 
-    return res.json({
-      success: true,
-      user,
-    });
+        const { timezone } = req.body;
 
-  } catch (error) {
+        if (!timezone || typeof timezone !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Timezone is required",
+            });
+        }
 
-    console.error(error);
+        const user = await UserService.updateTimezone(
+            req.user.id,
+            timezone,
+        );
 
-    return res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch user",
-    });
+        return res.json({
+            success: true,
+            timezone: user.timezone,
+        });
+    } catch (error) {
+        console.error(error);
 
-  }
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update timezone",
+        });
+    }
 };

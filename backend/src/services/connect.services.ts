@@ -36,6 +36,8 @@ export class ConnectService {
             redirectUri,
         });
 
+        console.log("OAuth callback result:");
+console.dir(result, { depth: null });
         // Only Gmail needs this mapping for webhook resolution
         if (result.plugin === PROVIDERS.GMAIL) {
             const profile = await this.getGmailProfile(result.tenantId);

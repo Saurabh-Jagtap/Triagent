@@ -1,5 +1,6 @@
 import type { ExecutionPlan } from "@repo/db/src/schema";
 import { Dispatch, SetStateAction } from "react";
+import { formatDateTime } from "./date.utils";
 
 type Props = {
   draft: ExecutionPlan;
@@ -79,23 +80,39 @@ export default function PlanDetails({
         </div>
       );
 
-    case "schedule":
+    case "schedule": {
+      const execution = draft.execution;
+
+      if (execution.tool !== "calendar" || execution.operation !== "schedule") {
+        return null;
+      }
 
       return (
         <div className="space-y-4">
 
           <Detail
+            label="Meeting"
+            value={execution.payload.title}
+          />
+
+          <Detail
             label="Attendees"
-            value={draft.task.attendeeNames?.join(", ") ?? "-"}
+            value={execution.payload.attendees.join(", ")}
           />
 
           <Detail
             label="Start Time"
-            value={draft.task.startTime ?? "-"}
+            value={formatDateTime(execution.payload.startTime)}
+          />
+
+          <Detail
+            label="End Time"
+            value={formatDateTime(execution.payload.endTime)}
           />
 
         </div>
       );
+    }
 
     default:
       return null;

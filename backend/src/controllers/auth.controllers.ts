@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import { pendingStates } from "./connect.controllers.js";
 import { ConnectService } from "../services/connect.services.js";
 
 const REDIRECT_URI = `${process.env.APP_URL}/api/auth`;
@@ -9,9 +8,9 @@ export const authController = async (req: Request, res: Response) => {
   const state = req.query.state as string | undefined;
   const error = req.query.error as string | undefined;
 
-  res.clearCookie("oauth_state");
-
   if (error) {
+    res.clearCookie("oauth_state");
+
     return res.status(400).json({
       success: false,
       error,
@@ -19,20 +18,27 @@ export const authController = async (req: Request, res: Response) => {
   }
 
   if (!code || !state) {
+    res.clearCookie("oauth_state");
+
     return res.status(400).json({
       success: false,
       message: "Missing code or state",
     });
   }
 
-  if (!pendingStates.has(state)) {
+  const storedState = req.cookies.oauth_state;
+
+  if (!storedState || storedState !== state) {
+    res.clearCookie("oauth_state");
+
     return res.status(400).json({
       success: false,
-      message: "Invalid state",
+      message: "Invalid OAuth state",
     });
   }
 
-  pendingStates.delete(state);
+  // State has been successfully validated.
+  res.clearCookie("oauth_state");
 
   try {
     const result = await ConnectService.completeConnection({
@@ -41,7 +47,8 @@ export const authController = async (req: Request, res: Response) => {
       redirectUri: REDIRECT_URI,
     });
 
-    res.redirect(`${process.env.FRONTEND_URL}/connect/success?plugin=${result.plugin}`)
+    return res.redirect(`${process.env.FRONTEND_URL}/connect/success?plugin=${result.plugin}`);
+
   } catch (error) {
     console.error(error);
 

@@ -109,7 +109,7 @@ export class ConversationOrchestrator {
         taskManager.markPlanning(userId);
 
         const builder = executionBuilderRegistry.resolve(plan);
-        const executionPlan = await builder.build(plan, task);
+        const executionPlan = await builder.build(plan, task, userId);
 
         console.log(
             JSON.stringify(executionPlan, null, 2)

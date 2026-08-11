@@ -5,6 +5,6 @@ export interface ExecutionBuilder {
 
     supports(plan: AssistantPlan): boolean;
 
-    build(plan: AssistantPlan, taskState: PendingTask): Promise<ExecutionPlan>;
+    build(plan: AssistantPlan, taskState: PendingTask, userId: string): Promise<ExecutionPlan>;
 
 }

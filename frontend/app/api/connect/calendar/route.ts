@@ -2,13 +2,13 @@ import { forwardToBackend } from "@/lib/backend-client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-
   const response = await forwardToBackend({
-      endpoint: "/api/connect?plugin=googlecalendar",
-      redirect: "manual",
-    });
+    endpoint: "/api/connect?plugin=googlecalendar",
+    redirect: "manual",
+  });
 
   const redirectUrl = response.headers.get("location");
+  const setCookie = response.headers.get("set-cookie");
 
   if (!redirectUrl) {
     return NextResponse.json(
@@ -17,5 +17,11 @@ export async function GET() {
     );
   }
 
-  return NextResponse.redirect(redirectUrl);
+  const nextResponse = NextResponse.redirect(redirectUrl);
+
+  if (setCookie) {
+    nextResponse.headers.set("set-cookie", setCookie);
+  }
+
+  return nextResponse;
 }

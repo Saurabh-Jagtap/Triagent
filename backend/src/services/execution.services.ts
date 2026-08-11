@@ -7,7 +7,6 @@ export class ExecutionService {
     async executePlan(userId: string, plan: ExecutionPlan): Promise<AssistantOutput> {
 
         const executor = executorRegistry.resolve(plan);
-
         const result = await executor.execute(plan, userId);
 
         taskManager.clear(userId);
@@ -16,7 +15,6 @@ export class ExecutionService {
             type: "artifact",
             artifact: result.artifact,
         };
-
 
     }
 }

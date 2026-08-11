@@ -1,3 +1,4 @@
+import TimezoneSync from "@/components/auth/TimezoneSync";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 export default function ProtectedLayout({
@@ -6,8 +7,12 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AppLayout>
-      {children}
-    </AppLayout>
+    <>
+      <TimezoneSync />
+      
+      <AppLayout>
+        {children}
+      </AppLayout>
+    </>
   );
 }
