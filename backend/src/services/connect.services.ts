@@ -21,6 +21,11 @@ type GmailProfile = {
 
 export class ConnectService {
     static async generateConnectionUrl({ plugin, tenantId, redirectUri }: ConnectParams) {
+        console.log("OAUTH CONNECT", {
+        plugin,
+        tenantId,
+        redirectUri,
+    });
         const { url, state } = await generateOAuthUrl(corsair, plugin, {
             tenantId,
             redirectUri,
