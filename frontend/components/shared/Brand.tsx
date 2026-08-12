@@ -1,19 +1,77 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-interface BrandProps {
+type BrandVariant = "default" | "reversed" | "mono";
+type BrandSize = "sm" | "md" | "lg";
+
+interface BrandMarkProps {
+  variant?: BrandVariant;
+  size?: BrandSize;
+  className?: string;
+}
+
+interface BrandProps extends BrandMarkProps {
   href?: string;
+  iconOnly?: boolean;
   className?: string;
   textClassName?: string;
   iconClassName?: string;
 }
 
+const ICON_DIMENSIONS: Record<BrandSize, { width: number; height: number }> = {
+  sm: { width: 22, height: 27 },
+  md: { width: 28, height: 38 },
+  lg: { width: 36, height: 44 },
+};
+
+const TEXT_SIZE: Record<BrandSize, string> = {
+  sm: "text-[16px]",
+  md: "text-[22px]",
+  lg: "text-[28px]",
+};
+
+const COLORS: Record<BrandVariant, { bar: string; dot: string; text: string }> = {
+  default: { bar: "#13294B", dot: "#A9812F", text: "text-[#13294B]" },
+  reversed: { bar: "#F8F4EA", dot: "#A9812F", text: "text-[#F8F4EA]" },
+  mono: { bar: "currentColor", dot: "currentColor", text: "text-current" },
+};
+
+export function BrandMark({
+  variant = "default",
+  size = "md",
+  className,
+}: BrandMarkProps) {
+  const { width, height } = ICON_DIMENSIONS[size];
+  const { bar, dot } = COLORS[variant];
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 44 54"
+      fill="none"
+      aria-hidden="true"
+      className={cn("shrink-0", className)}
+    >
+      <rect x="8" y="8" width="28" height="5" rx="2.5" fill={bar} />
+      <rect x="12" y="20" width="20" height="5" rx="2.5" fill={bar} />
+      <rect x="16" y="32" width="12" height="5" rx="2.5" fill={bar} />
+      <circle cx="22" cy="46" r="4.5" fill={dot} />
+    </svg>
+  );
+}
+
 export default function Brand({
   href = "/",
+  variant = "default",
+  size = "md",
+  iconOnly = false,
   className,
   textClassName,
   iconClassName,
 }: BrandProps) {
+  const { text } = COLORS[variant];
+
   return (
     <Link
       href={href}
@@ -23,89 +81,20 @@ export default function Brand({
         className
       )}
     >
-      <div className={cn("shrink-0", iconClassName)}>
-        <svg
-          width="28"
-          height="38"
-          viewBox="0 0 44 54"
-          fill="none"
-          aria-hidden="true"
+      <BrandMark variant={variant} size={size} className={iconClassName} />
+
+      {!iconOnly && (
+        <span
+          className={cn(
+            "font-newsreader font-medium tracking-[-0.02em]",
+            TEXT_SIZE[size],
+            text,
+            textClassName
+          )}
         >
-          <rect
-            x="8"
-            y="16"
-            width="28"
-            height="24"
-            rx="8"
-            fill="#13294B"
-          />
-
-          <circle
-            cx="17"
-            cy="27"
-            r="3.5"
-            fill="white"
-          />
-
-          <circle
-            cx="27"
-            cy="27"
-            r="3.5"
-            fill="white"
-          />
-
-          <path
-            d="M17 34 Q22 37.5 27 34"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            fill="none"
-          />
-
-          <rect
-            x="20"
-            y="5"
-            width="4"
-            height="11"
-            rx="2"
-            fill="#2D4A5E"
-          />
-
-          <circle
-            cx="22"
-            cy="4"
-            r="3.5"
-            fill="#4A7FA0"
-          />
-
-          <rect
-            x="1"
-            y="20"
-            width="8"
-            height="4"
-            rx="2"
-            fill="#2D4A5E"
-          />
-
-          <rect
-            x="35"
-            y="20"
-            width="8"
-            height="4"
-            rx="2"
-            fill="#2D4A5E"
-          />
-        </svg>
-      </div>
-
-      <span
-        className={cn(
-          "font-newsreader text-[22px] font-medium tracking-[-0.02em] text-[#13294B]",
-          textClassName
-        )}
-      >
-        Triagent
-      </span>
+          Triagent
+        </span>
+      )}
     </Link>
   );
 }

@@ -39,4 +39,31 @@ export class UserService {
         return updatedUser;
     }
 
+    static async updateProfile(userId: string, data: { name: string }) {
+        const name = data.name.trim();
+
+        if (!name) {
+            throw new Error("Name cannot be empty");
+        }
+
+        const [updatedUser] = await db
+            .update(user)
+            .set({
+                name,
+            })
+            .where(eq(user.id, userId))
+            .returning({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                image: user.image,
+                timezone: user.timezone,
+            });
+
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+
+        return updatedUser;
+    }
 }

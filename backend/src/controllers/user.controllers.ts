@@ -65,3 +65,43 @@ export const updateTimezone = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+    try {
+        if (!req.user?.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const { name } = req.body;
+
+        if (typeof name !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Name is required",
+            });
+        }
+
+        const user = await UserService.updateProfile(
+            req.user.id,
+            { name }
+        );
+
+        return res.json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to update profile",
+        });
+    }
+};
