@@ -7,12 +7,41 @@ type CreateConnectedAccount = {
     tenantId: string;
     provider: string;
     externalIdentifier: string;
+    displayName?: string;
 };
 
 export class ConnectedAccountsRepository {
 
     static async create(data: CreateConnectedAccount) {
         await db.insert(connectedAccounts).values(data);
+    }
+
+    static async upsert(data: CreateConnectedAccount) {
+        const existing = await db.query.connectedAccounts.findFirst({
+            where: and(
+                eq(connectedAccounts.provider, data.provider),
+                eq(
+                    connectedAccounts.externalIdentifier,
+                    data.externalIdentifier,
+                ),
+            ),
+        });
+
+        if (existing) {
+            return db
+                .update(connectedAccounts)
+                .set({
+                    tenantId: data.tenantId,
+                    displayName: data.displayName,
+                })
+                .where(eq(connectedAccounts.id, existing.id))
+                .returning();
+        }
+
+        return db
+            .insert(connectedAccounts)
+            .values(data)
+            .returning();
     }
 
     static async deleteByTenantAndProvider(tenantId: string, provider: string) {
@@ -26,10 +55,7 @@ export class ConnectedAccountsRepository {
             );
     }
 
-    static async findByProviderAndIdentifier(
-        provider: string,
-        externalIdentifier: string
-    ) {
+    static async findByProviderAndIdentifier(provider: string, externalIdentifier: string) {
         return await db.query.connectedAccounts.findFirst({
             where: and(
                 eq(connectedAccounts.provider, provider),

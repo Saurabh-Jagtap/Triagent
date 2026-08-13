@@ -1,4 +1,5 @@
 "use client";
+import { useConnections } from "@/hooks/useConnections";
 import { useSession } from "@/utils/auth-client";
 import { Check, Pencil, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ const SettingsPage = () => {
   const [name, setName] = useState(session?.user?.name ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
   const [nameError, setNameError] = useState("");
+  const { connections, isLoading, disconnecting, disconnect } = useConnections();
 
   useEffect(() => {
     if (session?.user?.name) {
@@ -64,6 +66,13 @@ const SettingsPage = () => {
     setName(session?.user?.name ?? "");
     setNameError("");
     setIsEditingName(false);
+  };
+
+  const handleConnect = (provider: "gmail" | "googlecalendar") => {
+    window.location.href =
+      provider === "gmail"
+        ? "/api/connect/gmail"
+        : "/api/connect/googlecalendar";
   };
 
   if (isPending) {
@@ -224,25 +233,29 @@ const SettingsPage = () => {
       </section>
 
       {/* Connected Accounts */}
-      <section className="mb-10">
-        <SectionHeader
-          title="Connected accounts"
-          description="Services Triagent can access"
+      <div className="mb-8">
+        <div className="text-[12px] font-medium text-[#1A2B35] mb-3">
+          Connected accounts
+        </div>
+
+        <ConnectionRow
+          name="Gmail"
+          connected={connections?.gmail.connected ?? false}
+          isLoading={isLoading}
+          isDisconnecting={disconnecting === "gmail"}
+          onConnect={() => handleConnect("gmail")}
+          onDisconnect={() => disconnect("gmail")}
         />
 
-        <div className="rounded-xl border border-[#E1DED5] bg-[#FDFCF8]">
-          <AccountRow
-            name="Gmail"
-            description="Email and inbox access"
-          />
-
-          <AccountRow
-            name="Google Calendar"
-            description="Calendar and meeting access"
-            last
-          />
-        </div>
-      </section>
+        <ConnectionRow
+          name="Google Calendar"
+          connected={connections?.googleCalendar.connected ?? false}
+          isLoading={isLoading}
+          isDisconnecting={disconnecting === "googlecalendar"}
+          onConnect={() =>handleConnect("googlecalendar")}
+          onDisconnect={() =>disconnect("googlecalendar")}
+        />
+      </div>
 
       {/* Timezone */}
       <section className="mb-10">
@@ -324,48 +337,74 @@ function SectionHeader({
   );
 }
 
-type AccountRowProps = {
+type ConnectionRowProps = {
   name: string;
-  description: string;
-  last?: boolean;
+  connected: boolean;
+  isLoading: boolean;
+  isDisconnecting: boolean;
+  onConnect: () => void;
+  onDisconnect: () => void;
 };
 
-function AccountRow({
+function ConnectionRow({
   name,
-  description,
-  last = false,
-}: AccountRowProps) {
+  connected,
+  isLoading,
+  isDisconnecting,
+  onConnect,
+  onDisconnect,
+}: ConnectionRowProps) {
   return (
-    <div
-      className={[
-        "flex items-center justify-between gap-4 px-5 py-4",
-        !last && "border-b border-[#E8E5DD]",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F0EEE7]">
-          <span className="text-[11px] font-semibold text-[#4A5568]">
-            {name === "Gmail" ? "G" : "GC"}
-          </span>
-        </div>
+    <div className="flex items-center gap-3 py-1">
+      <span
+        className={[
+          "w-1.5 h-1.5 rounded-full shrink-0",
+          connected ? "bg-[#2A7A4B]" : "bg-[#9AA8B2]",
+        ].join(" ")}
+      />
 
-        <div className="min-w-0">
-          <p className="text-[13px] font-medium text-[#1C2333]">
-            {name}
-          </p>
-
-          <p className="mt-0.5 truncate text-[11.5px] text-[#8B93A3]">
-            {description}
-          </p>
-        </div>
-      </div>
-
-      <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-[#2A7A4B]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#2A7A4B]" />
-        Connected
+      <span className="text-[13px] text-[#1A2B35]">
+        {name}
       </span>
+
+      <div className="ml-auto flex items-center gap-2">
+        {isLoading ? (
+          <span className="text-[11px] text-[#9AA8B2]">
+            Loading...
+          </span>
+        ) : connected ? (
+          <>
+            <span className="text-[11px] text-[#2A7A4B] bg-[#EAF5EF] px-2 py-0.5 rounded-full">
+              Connected
+            </span>
+
+            <button
+              type="button"
+              onClick={onDisconnect}
+              disabled={isDisconnecting}
+              className="text-[11px] text-[#8B5E5E] hover:text-[#6F3F3F] disabled:opacity-50 transition-colors"
+            >
+              {isDisconnecting
+                ? "Disconnecting..."
+                : "Disconnect"}
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="text-[11px] text-[#6B7280] bg-[#E8ECF0] px-2 py-0.5 rounded-full">
+              Not connected
+            </span>
+
+            <button
+              type="button"
+              onClick={onConnect}
+              className="text-[11px] text-[#8A6A25] hover:text-[#6F531D] transition-colors"
+            >
+              Connect
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

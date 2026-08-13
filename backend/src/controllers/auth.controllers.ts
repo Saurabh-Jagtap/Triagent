@@ -50,7 +50,10 @@ export const authController = async (req: Request, res: Response) => {
     return res.redirect(`${process.env.FRONTEND_URL}/connect/success?plugin=${result.plugin}`);
 
   } catch (error) {
-    console.error(error);
+    console.error("========== OAUTH CALLBACK ERROR ==========");
+  console.error(error);
+  console.error("==========================================");
+
 
     return res.status(500).json({
       success: false,
