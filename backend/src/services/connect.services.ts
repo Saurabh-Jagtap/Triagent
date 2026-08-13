@@ -120,55 +120,55 @@ export class ConnectService {
     }
 
     private static async revokeGoogleToken(refreshToken: string) {
-    const response = await fetch(
-        "https://oauth2.googleapis.com/revoke",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+        const response = await fetch(
+            "https://oauth2.googleapis.com/revoke",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    token: refreshToken,
+                }),
             },
-            body: new URLSearchParams({
-                token: refreshToken,
-            }),
-        },
-    );
+        );
 
-    // Google returns 200 when the token was successfully revoked.
-    // 400 can mean the token was already invalid/revoked.
-    if (!response.ok && response.status !== 400) {
-        throw new Error("Failed to revoke Google authorization");
-    }
-}
-
-static async disconnect(tenantId: string,provider: string) {
-    const tenantCorsair = corsair.withTenant(tenantId);
-
-    const refreshToken =
-        provider === PROVIDERS.GMAIL
-            ? await tenantCorsair.gmail.keys.get_refresh_token()
-            : provider === PROVIDERS.GOOGLE_CALENDAR
-                ? await tenantCorsair.googlecalendar.keys.get_refresh_token()
-                : null;
-
-    if (!refreshToken) {
-        throw new Error("No refresh token found");
+        // Google returns 200 when the token was successfully revoked.
+        // 400 can mean the token was already invalid/revoked.
+        if (!response.ok && response.status !== 400) {
+            throw new Error("Failed to revoke Google authorization");
+        }
     }
 
-    await this.revokeGoogleToken(refreshToken);
+    static async disconnect(tenantId: string, provider: string) {
+        const tenantCorsair = corsair.withTenant(tenantId);
 
-    if (provider === PROVIDERS.GMAIL) {
-        await tenantCorsair.gmail.keys.set_refresh_token("");
-        await tenantCorsair.gmail.keys.set_access_token("");
+        const refreshToken =
+            provider === PROVIDERS.GMAIL
+                ? await tenantCorsair.gmail.keys.get_refresh_token()
+                : provider === PROVIDERS.GOOGLE_CALENDAR
+                    ? await tenantCorsair.googlecalendar.keys.get_refresh_token()
+                    : null;
+
+        if (!refreshToken) {
+            throw new Error("No refresh token found");
+        }
+
+        await this.revokeGoogleToken(refreshToken);
+
+        if (provider === PROVIDERS.GMAIL) {
+            await tenantCorsair.gmail.keys.set_refresh_token("");
+            await tenantCorsair.gmail.keys.set_access_token("");
+        }
+
+        if (provider === PROVIDERS.GOOGLE_CALENDAR) {
+            await tenantCorsair.googlecalendar.keys.set_refresh_token("");
+            await tenantCorsair.googlecalendar.keys.set_access_token("");
+        }
+
+        await ConnectedAccountsRepository.deleteByTenantAndProvider(
+            tenantId,
+            provider,
+        );
     }
-
-    if (provider === PROVIDERS.GOOGLE_CALENDAR) {
-        await tenantCorsair.googlecalendar.keys.set_refresh_token("");
-        await tenantCorsair.googlecalendar.keys.set_access_token("");
-    }
-
-    await ConnectedAccountsRepository.deleteByTenantAndProvider(
-        tenantId,
-        provider,
-    );
-}
 }

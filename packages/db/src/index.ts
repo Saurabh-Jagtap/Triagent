@@ -9,7 +9,7 @@ export { pool };
 
 export { schema };
 
-export { eq } from "drizzle-orm";
+export { eq, inArray } from "drizzle-orm";
 
 // Re-export all tables directly
 export * from "./schema/index.js";

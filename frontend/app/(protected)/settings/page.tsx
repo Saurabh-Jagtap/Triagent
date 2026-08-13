@@ -1,22 +1,67 @@
 "use client";
+import { ConnectionRow } from "@/components/settings/ConnectionRow";
+import { SectionHeader } from "@/components/settings/SectionHeader";
 import { useConnections } from "@/hooks/useConnections";
-import { useSession } from "@/utils/auth-client";
+import { signOut, useSession } from "@/utils/auth-client";
 import { Check, Pencil, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const TIMEZONES =
+  typeof Intl.supportedValuesOf === "function"
+    ? Intl.supportedValuesOf("timeZone")
+    : [];
+
 const SettingsPage = () => {
   const { data: session, isPending } = useSession();
+  const { connections, isLoading, disconnecting, disconnect } = useConnections();
+
   const [isEditingName, setIsEditingName] = useState(false);
   const [name, setName] = useState(session?.user?.name ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
   const [nameError, setNameError] = useState("");
-  const { connections, isLoading, disconnecting, disconnect } = useConnections();
+
+  const [timezone, setTimezone] = useState("");
+  const [isSavingTimezone, setIsSavingTimezone] = useState(false);
+  const [timezoneError, setTimezoneError] = useState("");
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     if (session?.user?.name) {
       setName(session.user.name);
     }
   }, [session?.user?.name]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/user/me", {
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message ?? "Failed to fetch user");
+        }
+
+        setTimezone(data.user.timezone);
+      } catch (error) {
+        console.error("Failed to fetch timezone:", error);
+        setTimezoneError(
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch timezone"
+        );
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleSaveName = async () => {
     const trimmedName = name.trim();
@@ -73,6 +118,84 @@ const SettingsPage = () => {
       provider === "gmail"
         ? "/api/connect/gmail"
         : "/api/connect/googlecalendar";
+  };
+
+  const handleSaveTimezone = async (newTimezone: string) => {
+    try {
+      setIsSavingTimezone(true);
+      setTimezoneError("");
+
+      const response = await fetch("/api/user/timezone", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          timezone: newTimezone,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message ?? "Failed to update timezone");
+      }
+
+      setTimezone(data.timezone);
+    } catch (error) {
+      console.error("Failed to update timezone:", error);
+
+      setTimezoneError(
+        error instanceof Error
+          ? error.message
+          : "Failed to update timezone"
+      );
+    } finally {
+      setIsSavingTimezone(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== "DELETE") {
+      return;
+    }
+
+    try {
+      setIsDeletingAccount(true);
+      setDeleteError("");
+
+      const response = await fetch("/api/user/account", {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message ?? "Failed to delete account"
+        );
+      }
+
+      // Account no longer exists, so end the Better Auth session.
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            window.location.href = "/signin";
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Account deletion failed:", error);
+
+      setDeleteError(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete account"
+      );
+
+      setIsDeletingAccount(false);
+    }
   };
 
   if (isPending) {
@@ -252,8 +375,8 @@ const SettingsPage = () => {
           connected={connections?.googleCalendar.connected ?? false}
           isLoading={isLoading}
           isDisconnecting={disconnecting === "googlecalendar"}
-          onConnect={() =>handleConnect("googlecalendar")}
-          onDisconnect={() =>disconnect("googlecalendar")}
+          onConnect={() => handleConnect("googlecalendar")}
+          onDisconnect={() => disconnect("googlecalendar")}
         />
       </div>
 
@@ -276,9 +399,32 @@ const SettingsPage = () => {
               </p>
             </div>
 
-            <span className="shrink-0 text-[12px] text-[#4A5568]">
-              Loading...
-            </span>
+            <select
+              value={timezone}
+              onChange={(event) =>
+                handleSaveTimezone(event.target.value)
+              }
+              disabled={!timezone || isSavingTimezone}
+              className="w-full max-w-[220px] rounded-lg border border-[#D8D4C9] bg-white px-3 py-2 text-[12px] text-[#1C2333] outline-none transition-colors focus:border-[#A9812F] focus:ring-1 focus:ring-[#A9812F]/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {!timezone && (
+                <option value="">
+                  Loading...
+                </option>
+              )}
+
+              {TIMEZONES.map((tz) => (
+                <option key={tz} value={tz}>
+                  {tz}
+                </option>
+              ))}
+            </select>
+
+            {timezoneError && (
+              <p className="mt-2 text-[11.5px] text-[#8B342D]">
+                {timezoneError}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -303,110 +449,106 @@ const SettingsPage = () => {
             </div>
 
             <button
-              type="button"
-              className="shrink-0 rounded-lg border border-[#D6AAA5] px-3.5 py-2 text-[12px] font-medium text-[#8B342D] transition-colors hover:bg-[#F7EDEA]"
-            >
-              Delete account
-            </button>
+  type="button"
+  onClick={() => {
+    setDeleteConfirmation("");
+    setDeleteError("");
+    setShowDeleteDialog(true);
+  }}
+  className="rounded-lg border border-[#D8C6C2] px-4 py-2 text-[12px] text-[#8B342D] hover:bg-[#FBF5F4] transition-colors"
+>
+  Delete Account
+</button>
           </div>
         </div>
       </section>
-    </div>
-  );
-};
 
-type SectionHeaderProps = {
-  title: string;
-  description: string;
-};
+      {showDeleteDialog && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+    {/* Backdrop */}
+    <button
+      type="button"
+      aria-label="Close dialog"
+      onClick={() => {
+        if (!isDeletingAccount) {
+          setShowDeleteDialog(false);
+        }
+      }}
+      className="absolute inset-0 bg-[#1C2333]/40 backdrop-blur-[2px]"
+    />
 
-function SectionHeader({
-  title,
-  description,
-}: SectionHeaderProps) {
-  return (
-    <div className="mb-3">
-      <h2 className="text-[13px] font-medium text-[#1C2333]">
-        {title}
-      </h2>
+    {/* Dialog */}
+    <div className="relative w-full max-w-md rounded-xl border border-[#DDD8CB] bg-[#FDFCFA] p-6 shadow-xl">
+      <div className="mb-5">
+        <h2 className="font-newsreader text-[22px] font-medium text-[#1C2333]">
+          Delete your account?
+        </h2>
 
-      <p className="mt-0.5 text-[11.5px] text-[#8B93A3]">
-        {description}
-      </p>
-    </div>
-  );
-}
+        <p className="mt-2 text-[12.5px] leading-5 text-[#687181]">
+          This permanently deletes your Triagent account,
+          connected integrations, conversations, and
+          associated data. This action cannot be undone.
+        </p>
+      </div>
 
-type ConnectionRowProps = {
-  name: string;
-  connected: boolean;
-  isLoading: boolean;
-  isDisconnecting: boolean;
-  onConnect: () => void;
-  onDisconnect: () => void;
-};
+      <div className="mb-5">
+        <label
+          htmlFor="delete-confirmation"
+          className="block text-[11.5px] font-medium text-[#4A5568] mb-2"
+        >
+          Type <span className="font-semibold">DELETE</span>{" "}
+          to confirm
+        </label>
 
-function ConnectionRow({
-  name,
-  connected,
-  isLoading,
-  isDisconnecting,
-  onConnect,
-  onDisconnect,
-}: ConnectionRowProps) {
-  return (
-    <div className="flex items-center gap-3 py-1">
-      <span
-        className={[
-          "w-1.5 h-1.5 rounded-full shrink-0",
-          connected ? "bg-[#2A7A4B]" : "bg-[#9AA8B2]",
-        ].join(" ")}
-      />
+        <input
+          id="delete-confirmation"
+          type="text"
+          value={deleteConfirmation}
+          onChange={(event) =>
+            setDeleteConfirmation(event.target.value)
+          }
+          disabled={isDeletingAccount}
+          autoComplete="off"
+          placeholder="DELETE"
+          className="w-full rounded-lg border border-[#D8D4C9] bg-white px-3 py-2.5 text-[13px] text-[#1C2333] outline-none transition-colors placeholder:text-[#B0B3B8] focus:border-[#A9812F] focus:ring-1 focus:ring-[#A9812F]/20 disabled:opacity-60"
+        />
 
-      <span className="text-[13px] text-[#1A2B35]">
-        {name}
-      </span>
-
-      <div className="ml-auto flex items-center gap-2">
-        {isLoading ? (
-          <span className="text-[11px] text-[#9AA8B2]">
-            Loading...
-          </span>
-        ) : connected ? (
-          <>
-            <span className="text-[11px] text-[#2A7A4B] bg-[#EAF5EF] px-2 py-0.5 rounded-full">
-              Connected
-            </span>
-
-            <button
-              type="button"
-              onClick={onDisconnect}
-              disabled={isDisconnecting}
-              className="text-[11px] text-[#8B5E5E] hover:text-[#6F3F3F] disabled:opacity-50 transition-colors"
-            >
-              {isDisconnecting
-                ? "Disconnecting..."
-                : "Disconnect"}
-            </button>
-          </>
-        ) : (
-          <>
-            <span className="text-[11px] text-[#6B7280] bg-[#E8ECF0] px-2 py-0.5 rounded-full">
-              Not connected
-            </span>
-
-            <button
-              type="button"
-              onClick={onConnect}
-              className="text-[11px] text-[#8A6A25] hover:text-[#6F531D] transition-colors"
-            >
-              Connect
-            </button>
-          </>
+        {deleteError && (
+          <p className="mt-2 text-[11.5px] text-[#8B342D]">
+            {deleteError}
+          </p>
         )}
       </div>
+
+      <div className="flex items-center justify-end gap-2.5">
+        <button
+          type="button"
+          disabled={isDeletingAccount}
+          onClick={() => setShowDeleteDialog(false)}
+          className="rounded-lg px-4 py-2 text-[12px] text-[#687181] hover:bg-[#F2F0EA] transition-colors disabled:opacity-50"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          disabled={
+            deleteConfirmation !== "DELETE" ||
+            isDeletingAccount
+          }
+          onClick={handleDeleteAccount}
+          className="rounded-lg bg-[#8B342D] px-4 py-2 text-[12px] text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {isDeletingAccount
+            ? "Deleting..."
+            : "Delete account"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
-}
+};
 
 export default SettingsPage;
