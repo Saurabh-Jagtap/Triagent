@@ -32,16 +32,17 @@ export class CalendarExecutionBuilder
         const endTime = normalizeEndTime(
             startTime,
             taskState.collected.endTime,
+            taskState.collected.durationMinutes,
             timezone,
         );
 
         console.log("CALENDAR TIME DEBUG");
-console.log("User timezone:", timezone);
-console.log("Raw startTime:", taskState.collected.startTime);
-console.log("Normalized startTime:", startTime);
+        console.log("User timezone:", timezone);
+        console.log("Raw startTime:", taskState.collected.startTime);
+        console.log("Normalized startTime:", startTime);
 
         const draft = await calendarDraftService.generate(plan);
-        
+
         return {
             reply: plan.reply,
             task: plan.task,

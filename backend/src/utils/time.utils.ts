@@ -90,10 +90,7 @@ function parseDateTime(
     return dateTime;
 }
 
-export function normalizeStartTime(
-    value: string,
-    timezone: string,
-): string {
+export function normalizeStartTime(value: string,timezone: string): string {
 
     const referenceDate = getReferenceDate(timezone);
 
@@ -106,11 +103,7 @@ export function normalizeStartTime(
     return dateTime.toUTC().toISO()!;
 }
 
-export function normalizeEndTime(
-    startTime: string,
-    endTime: string | undefined,
-    timezone: string,
-): string {
+export function normalizeEndTime(startTime: string,endTime: string | undefined,durationMinutes: number | undefined,timezone: string): string {
 
     const start = DateTime.fromISO(startTime, {
         zone: "utc",
@@ -123,12 +116,12 @@ export function normalizeEndTime(
     }
 
     if (!endTime) {
-        return start
-            .plus({
-                minutes: DEFAULT_DURATION_MINUTES,
-            })
-            .toISO()!;
-    }
+    return start
+        .plus({
+            minutes: durationMinutes ?? DEFAULT_DURATION_MINUTES,
+        })
+        .toISO()!;
+}
 
     /*
      * Interpret the user's end-time expression relative to

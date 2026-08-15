@@ -54,6 +54,7 @@ export const CollectedSchema = z.object({
     attendeeEmails: z.array(z.string().email()).optional(),
     startTime: z.string().optional(),
     endTime: z.string().optional(),
+    durationMinutes: z.number().positive().optional(),
 });
 
 export const ConversationResultSchema = z.object({

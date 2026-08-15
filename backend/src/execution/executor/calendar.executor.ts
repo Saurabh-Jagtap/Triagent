@@ -29,11 +29,6 @@ export class CalendarExecutor implements Executor {
             endTime,
         });
 
-        console.log(
-    "CALENDAR EXECUTION",
-    JSON.stringify(plan.execution, null, 2)
-);
-
         return {
             status: "completed",
             artifact: {

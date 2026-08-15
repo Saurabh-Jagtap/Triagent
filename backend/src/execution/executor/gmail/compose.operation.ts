@@ -5,9 +5,7 @@ import type { GmailOperation } from "./operation.interface.js";
 
 export class ComposeOperation implements GmailOperation {
 
-    constructor(
-        private readonly emailService = EmailService,
-    ) { }
+    constructor(private readonly emailService = EmailService) { }
 
     supports(plan: ExecutionPlan): boolean {
         return plan.task.operation === "compose";
@@ -32,7 +30,7 @@ export class ComposeOperation implements GmailOperation {
             status: "completed",
             artifact: {
                 kind: "text",
-                content: `✅ Email sent successfully to ${plan.task.recipientName}.`,
+                content: `✅ Email sent successfully to ${execution.payload.to}.`,
             },
         };
     }
