@@ -9,7 +9,7 @@ export function HeroContent() {
         <span className="h-2 w-2 rounded-full bg-[#A9822E]" />
 
         <span className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-[#7A5D22]">
-          Executive Operator
+          AI Executive Assistant
         </span>
       </div>
 
@@ -24,8 +24,9 @@ export function HeroContent() {
 
       {/* Description */}
       <p className="mt-8 max-w-xl text-lg leading-8 text-[#5B5F72]">
-        Connect your workspace. Delegate repetitive work.
-        Stay focused on what actually moves things forward.
+        Triagent is your AI executive assistant for Gmail and Google Calendar.
+        Delegate email and scheduling tasks through natural-language conversations
+        while staying in control of every action.
       </p>
 
       {/* CTA */}
