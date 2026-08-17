@@ -9,6 +9,7 @@ const PUBLIC_ROUTES = [
   "/verify-email",
   "/privacy",
   "/terms",
+  "/about"
 ];
 
 const AUTH_PAGES = [
