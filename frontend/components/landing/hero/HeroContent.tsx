@@ -24,9 +24,24 @@ export function HeroContent() {
 
       {/* Description */}
       <p className="mt-8 max-w-xl text-lg leading-8 text-[#5B5F72]">
-        Triagent is an AI executive assistant for Gmail and Google Calendar.
-        It helps you understand important emails, draft and send messages,
-        and manage meetings through natural-language conversations.
+        Triagent is an AI executive assistant that connects to your Gmail
+        and Google Calendar account. It uses authorized Google data to
+        summarize and organize email, draft and send messages, check
+        calendar availability, and create and manage calendar events based
+        on your requests.
+      </p>
+
+      <p className="mt-5 max-w-xl text-sm leading-6 text-[#6B7180]">
+        Triagent only accesses Google account data needed to provide these
+        features. See our{" "}
+        <a
+          href="/privacy"
+          className="font-medium text-[#7A5D22] underline underline-offset-4 hover:text-[#13294B]"
+        >
+          Privacy Policy
+        </a>{" "}
+        for details about how Google user data is accessed, used, stored,
+        and shared.
       </p>
 
       {/* CTA */}
