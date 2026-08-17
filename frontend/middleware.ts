@@ -7,6 +7,8 @@ const PUBLIC_ROUTES = [
   "/forgot-password",
   "/reset-password",
   "/verify-email",
+  "/privacy",
+  "/terms",
 ];
 
 const AUTH_PAGES = [
